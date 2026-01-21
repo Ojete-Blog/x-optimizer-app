@@ -24,6 +24,9 @@ function loadPreview() {
         if (window.twttr && window.twttr.widgets && window.twttr.widgets.createTweet) {
             window.twttr.widgets.createTweet(postId, tweetEmbed, { lang: 'es', dnt: true }).then(() => {
                 previewStatus.textContent = 'Preview cargado – usa Auto-Analizar para informe detallado.';
+            }).catch((error) => {
+                console.error('Error loading tweet:', error);
+                previewStatus.textContent = 'Error al cargar preview – prueba refrescar.';
             });
         } else {
             setTimeout(tryRender, 2000);
@@ -37,7 +40,7 @@ function loadPreview() {
 }
 
 function fallback(url) {
-    document.getElementById('previewStatus').innerHTML = `No cargó embed. <a href="${url}" target="_blank" class="fallback-link">Ver en X</a>`;
+    document.getElementById('previewStatus').innerHTML = `No cargó embed – posiblemente bloqueo del navegador. <a href="${url}" target="_blank" class="fallback-link">Ver en X</a>`;
 }
 
 function autoAnalyze() {
@@ -46,29 +49,31 @@ function autoAnalyze() {
     const mediaInput = document.getElementById('mediaInput').value.trim();
     const previewStatus = document.getElementById('previewStatus');
 
+    previewStatus.textContent = 'Iniciando análisis (detectando modo)...';
+
+    let mode = 'manual';
+    let fetchedText = textInput;
+    let fetchedMedia = mediaInput;
+
     if (urlInput && postId) {
-        previewStatus.textContent = 'Investigando con link (parseando embed)...';
-        setTimeout(() => {
-            const embedDiv = document.querySelector('#tweetEmbed .twitter-tweet');
-            let fetchedText = '';
-            let fetchedMedia = '';
-            if (embedDiv) {
-                fetchedText = embedDiv.querySelector('p') ? embedDiv.querySelector('p').textContent.trim() : 'Texto no detectado.';
-                fetchedMedia = embedDiv.querySelector('img') ? 'Imagen detectada' : embedDiv.querySelector('video') ? 'Video detectado' : 'No media.';
-                document.getElementById('postInput').value = fetchedText;
-                document.getElementById('mediaInput').value = fetchedMedia;
-                previewStatus.textContent = 'Investigación con link completa – informe detallado abajo.';
-            } else {
-                previewStatus.textContent = 'Investigación con link parcial – usando manual si disponible.';
-            }
-            generateReport(textInput || fetchedText, mediaInput || fetchedMedia, 'link');
-        }, 5000);
-    } else if (textInput || mediaInput) {
-        previewStatus.textContent = 'Investigando manual (sin link) – informe detallado abajo.';
-        generateReport(textInput, mediaInput, 'manual');
-    } else {
-        alert('Pega URL para link auto, o texto/media para manual.');
+        mode = 'link';
+        previewStatus.textContent = 'Investigando con link (intentando parsear embed)...';
+        const embedDiv = document.querySelector('#tweetEmbed .twitter-tweet');
+        if (embedDiv) {
+            fetchedText = embedDiv.querySelector('p') ? embedDiv.querySelector('p').textContent.trim() : textInput || 'Texto no detectado - usa manual.';
+            fetchedMedia = embedDiv.querySelector('img') ? 'Imagen detectada' : embedDiv.querySelector('video') ? 'Video detectado' : mediaInput || 'No media detectada.';
+        } else {
+            previewStatus.textContent = 'Embed no accesible - usando manual si disponible.';
+        }
     }
+
+    if (!fetchedText && !fetchedMedia) {
+        previewStatus.textContent = 'No hay contenido - pega URL o texto/media.';
+        return;
+    }
+
+    previewStatus.textContent = 'Análisis completo (modo: ' + mode + ') – informe abajo.';
+    generateReport(fetchedText, fetchedMedia, mode);
 }
 
 function generateReport(text, media, mode) {
@@ -120,7 +125,7 @@ function generateReport(text, media, mode) {
     const scoreClass = score >= 70 ? 'score-high' : score >= 40 ? 'score-medium' : 'score-low';
 
     let resultsHtml = `<h2>Score Estimado Detallado: <span class="score ${scoreClass}">${score}/${maxScore}</span></h2>`;
-    resultsHtml += '<p>Explicación extensa: Simulación de weighted scorer (Σ weight × P(action), per repo) – alto si >70 (buen engagement), medio 40-70 (mejorable), bajo <40 (riesgos altos). Para este post, ajustes basados en investigación (modo ' + mode + ').</p>';
+    resultsHtml += '<p>Explicación extensa: Simulación de weighted scorer (Σ weight × P(action), per repo) – alto si >70 (buen engagement), medio 40-70 (mejorable), bajo <40 (riesgos altos). Para este post, basado en investigación (modo ' + mode + ').</p>';
     if (postId) resultsHtml += `<p>ID investigado: ${postId}</p>`;
     suggestions.forEach(s => resultsHtml += `<div class="suggestion">${s}</div>`);
 
@@ -138,9 +143,12 @@ function generateGrokPrompt() {
     const urlInput = document.getElementById('postUrl').value.trim();
     const textInput = document.getElementById('postInput').value.trim() || ' [texto del post]';
     const mediaInput = document.getElementById('mediaInput').value.trim() || ' [media]';
-    const prompt = `Como Grok, analiza este post de @GlobalEye_TV con ${urlInput ? 'URL "' + urlInput + '"' : 'texto manual'}: Texto: "${textInput}". Media: "${mediaInput}". Da informe detallado extenso: Score (weighted scorer), explicaciones paso a paso (P(reply)/dwell/video_view/negatives), mejoras específicas para replies/threads/videos, evitando negatives. Genera versión optimizada. Sé exhaustivo con Premium.`;
-    alert('Prompt generado para Grok (copia y pega en chat Grok – no abre directo, usa manual):\n\n' + prompt);
-    document.getElementById('results').innerHTML += '<p>Prompt listo – pégalo en Grok para análisis Premium (detectado modo ' + (urlInput ? 'link' : 'manual') + ').</p>';
+    const mode = urlInput ? 'link' : 'manual';
+    const prompt = `Como Grok, analiza este post de @GlobalEye_TV con ${mode === 'link' ? 'URL "' + urlInput + '" (ID ${postId})' : 'texto manual'}: Texto: "${textInput}". Media: "${mediaInput}". Da informe detallado extenso: Score (weighted scorer), explicaciones paso a paso (P(reply)/dwell/video_view/negatives), mejoras específicas para replies/threads/videos, evitando negatives. Genera versión optimizada. Sé exhaustivo con Premium.`;
+
+    const results = document.getElementById('results');
+    let promptHtml = '<div id="grokPromptContainer"><h3>Prompt para Grok (copia y pega en chat Grok – no abre directo):</h3><pre>' + prompt.replace(/\n/g, '<br>') + '</pre></div>';
+    results.innerHTML += promptHtml;
 }
 
 // Funciones auxiliares
