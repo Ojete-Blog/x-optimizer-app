@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer App v3.3 - Grow Your @GlobalEye_TV</title>
+    <title>X Optimizer App v4.0 - Grow Your @GlobalEye_TV</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>X Post Optimizer v3.3 for @GlobalEye_TV</h1>
-        <p>Pega URL → intenta preview real (embed oficial X 2026). Si se queda cargando: espera 10s, refresca, o prueba logueado en X / sin adblock. Análisis en texto pegado.</p>
+        <h1>X Post Optimizer v4.0 for @GlobalEye_TV</h1>
+        <p>Pega URL → preview + auto-investigación (fetch texto/media si posible). Click "Auto-Analizar" para optimizar directo. Si falla (CORS/X block), pega manual.</p>
         <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()">
         <div id="previewContainer" class="preview-box">
-            <p id="previewStatus">Pega URL para preview (puede tardar 5-15s; bug común X).</p>
-            <div id="tweetEmbed" style="min-height: 200px;"></div>
+            <p id="previewStatus">Pega URL para preview/investigación (5-15s).</p>
+            <div id="tweetEmbed"></div>
         </div>
-        <textarea id="postInput" placeholder="Pega el texto del post aquí..."></textarea>
-        <textarea id="mediaInput" placeholder="Descripciones/URLs de media (opcional)"></textarea>
-        <button onclick="optimizePost()">Optimizar Post</button>
+        <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar & Optimizar</button>
+        <textarea id="postInput" placeholder="Texto auto-fetch o pega manual..."></textarea>
+        <textarea id="mediaInput" placeholder="Media auto-detect o pega (e.g., imagen URL, video desc)"></textarea>
+        <button onclick="optimizePost()">Optimizar Manual</button>
         <div id="results"></div>
     </div>
 
-    <!-- Script oficial X widgets (2026: platform.x.com) -->
     <script async src="https://platform.x.com/widgets.js" charset="utf-8" id="x-widgets"></script>
-
     <script src="app.js"></script>
 </body>
 </html>
