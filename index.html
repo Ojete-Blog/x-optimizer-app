@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer App v3.2 - Grow Your @GlobalEye_TV</title>
+    <title>X Optimizer App v3.3 - Grow Your @GlobalEye_TV</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>X Post Optimizer v3.2 for @GlobalEye_TV</h1>
-        <p>Pega URL → extrae ID + intenta preview real (embed oficial X). Si se queda cargando, espera 10s o refresca (bug común X). Luego analiza texto/media.</p>
+        <h1>X Post Optimizer v3.3 for @GlobalEye_TV</h1>
+        <p>Pega URL → intenta preview real (embed oficial X 2026). Si se queda cargando: espera 10s, refresca, o prueba logueado en X / sin adblock. Análisis en texto pegado.</p>
         <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()">
         <div id="previewContainer" class="preview-box">
-            <p id="previewStatus">Pega URL para preview (puede tardar 5-10s en cargar el embed de X).</p>
-            <div id="tweetEmbed"></div>
+            <p id="previewStatus">Pega URL para preview (puede tardar 5-15s; bug común X).</p>
+            <div id="tweetEmbed" style="min-height: 200px;"></div>
         </div>
         <textarea id="postInput" placeholder="Pega el texto del post aquí..."></textarea>
         <textarea id="mediaInput" placeholder="Descripciones/URLs de media (opcional)"></textarea>
@@ -21,8 +21,8 @@
         <div id="results"></div>
     </div>
 
-    <!-- Script X widgets (cargado una vez) -->
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" id="twitter-widgets"></script>
+    <!-- Script oficial X widgets (2026: platform.x.com) -->
+    <script async src="https://platform.x.com/widgets.js" charset="utf-8" id="x-widgets"></script>
 
     <script src="app.js"></script>
 </body>
