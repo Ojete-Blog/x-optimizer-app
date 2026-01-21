@@ -19,7 +19,7 @@ h1 {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.url-input {
+.url-input, textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -29,12 +29,7 @@ h1 {
 }
 
 textarea {
-    width: 100%;
-    height: 150px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    height: 120px;
 }
 
 button {
@@ -50,6 +45,24 @@ button {
 
 button:hover {
     background: #0c85d0;
+}
+
+#previewContainer {
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px dashed #1DA1F2;
+    border-radius: 8px;
+    min-height: 100px;
+    background: #f9fcff;
+}
+
+.preview-box {
+    text-align: center;
+}
+
+#tweetEmbed {
+    margin: 10px auto;
+    max-width: 550px; /* Ancho típico de embeds X */
 }
 
 #results {

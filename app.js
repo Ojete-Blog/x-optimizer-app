@@ -1,124 +1,144 @@
+function loadPreview() {
+    const urlInput = document.getElementById('postUrl').value.trim();
+    const previewStatus = document.getElementById('previewStatus');
+    const tweetEmbed = document.getElementById('tweetEmbed');
+
+    if (!urlInput) {
+        previewStatus.textContent = 'Pega la URL arriba para ver el preview del post (embed real de X).';
+        tweetEmbed.innerHTML = '';
+        return;
+    }
+
+    // Regex preciso para post_id (soporta x.com y twitter.com)
+    const match = urlInput.match(/(?:x\.com|twitter\.com)\/(?:\w+)\/status\/(\d{1,19})/);
+    if (!match) {
+        previewStatus.textContent = 'URL inválida. Usa formato https://x.com/user/status/123456...';
+        tweetEmbed.innerHTML = '';
+        return;
+    }
+
+    const postId = match[1];
+    previewStatus.textContent = `Cargando preview del post ID: ${postId}... (puede tardar unos segundos)`;
+
+    // Generar embed oficial de X
+    tweetEmbed.innerHTML = `
+        <blockquote class="twitter-tweet">
+            <a href="https://x.com/i/status/${postId}"></a>
+        </blockquote>
+    `;
+
+    // Forzar recarga de widgets si ya está cargado
+    if (window.twttr && window.twttr.widgets) {
+        window.twttr.widgets.load();
+    }
+}
+
 function optimizePost() {
     const urlInput = document.getElementById('postUrl').value.trim();
     const textInput = document.getElementById('postInput').value.trim();
+    const mediaInput = document.getElementById('mediaInput').value.trim();
     
     if (!textInput) {
-        alert('Por favor, pega el texto del post (requerido para análisis preciso). Si das URL, copia el texto de X manualmente.');
+        alert('Pega el texto del post para análisis (el preview ya lo muestra visualmente).');
         return;
     }
 
     let postId = null;
     if (urlInput) {
-        // Regex preciso para extraer post_id de URL de X (e.g., /status/1234567890123456789)
-        const match = urlInput.match(/\/status\/(\d+)/);
+        const match = urlInput.match(/(?:x\.com|twitter\.com)\/(?:\w+)\/status\/(\d{1,19})/);
         if (match) {
             postId = match[1];
-            alert(`Post ID extraído: ${postId}. Análisis basado en texto pegado (fetch no disponible sin API/costo).`);
-        } else {
-            alert('URL inválida. Debe ser como https://x.com/user/status/123456.');
-            return;
         }
     }
+
+    const fullContent = textInput + (mediaInput ? ' ' + mediaInput : '');
 
     let score = 0;
     let suggestions = [];
     const maxScore = 100;
 
-    // 1. Replies de calidad (P(reply) +30, preciso con triggers del repo como engagement history)
-    if (checkForReplies(textInput)) {
+    // Checks precisos (igual que v3.0, pero con fullContent incluyendo media desc)
+    if (checkForReplies(fullContent)) {
         score += 30;
-        suggestions.push('✅ Excelente para replies: Incluye triggers como preguntas (peso alto ~13-30x like en weighted scorer).');
+        suggestions.push('✅ Replies: Triggers detectados (peso alto en scorer).');
     } else {
-        suggestions.push('❌ Mejora: Agrega calls-to-action precisos para P(reply) (e.g., "¿Qué opinas de esta noticia global?").');
+        suggestions.push('❌ Agrega preguntas para P(reply) alto.');
     }
 
-    // 2. Threads largos para dwell (P(dwell) +20, check palabra count >100, del scoring)
-    const wordCount = textInput.split(/\s+/).length;
+    const wordCount = fullContent.split(/\s+/).length;
     if (wordCount > 100) {
         score += 20;
-        suggestions.push('✅ Ideal para dwell time: Thread largo favorece P(dwell) y engagement sostenido.');
+        suggestions.push('✅ Dwell: Contenido largo ideal.');
     } else {
-        suggestions.push('❌ Mejora: Extiende a >100 palabras para threads (aumenta P(dwell) en Phoenix scorer).');
+        suggestions.push('❌ Extiende para mayor dwell time.');
     }
 
-    // 3. Videos cortos con alto dwell (P(video_view) +15, check para media/filter:videos)
-    if (checkForVideos(textInput)) {
+    if (checkForVideos(fullContent)) {
         score += 15;
-        suggestions.push('✅ Bueno para videos: Mención a clips cortos con hook para alto P(video_view).');
+        suggestions.push('✅ Video: Bueno si corto y engaging.');
     } else {
-        suggestions.push('❌ Mejora: Incluye videos cortos (2-3 seg iniciales) para P(video_view/photo_expand).');
+        suggestions.push('❌ Agrega video corto para P(video_view).');
     }
 
-    // 4. Evitar negatives (P(not_interested/block/report) -20, check repetitivo/spam, muted keywords comunes)
-    if (checkForNegatives(textInput, wordCount)) {
+    if (checkForNegatives(fullContent, wordCount)) {
         score += 20;
-        suggestions.push('✅ Bajo riesgo de negatives: No spammy, pasa pre-scoring filters como muted keywords.');
+        suggestions.push('✅ Bajo riesgo negatives.');
     } else {
         score -= 20;
-        suggestions.push('❌ Mejora: Evita repeticiones o spam (genera P(not_interested)/block, pesos negativos en scorer).');
+        suggestions.push('❌ Evita spam/repetitivo.');
     }
 
-    // 5. Media/links extra (filter:media/links +10, para diversidad)
-    if (checkForMedia(textInput)) {
-        score += 10;
-        suggestions.push('✅ Plus para media/links: Aumenta P(click/share), compatible con candidate hydration.');
+    if (checkForMedia(fullContent)) {
+        score += 15;
+        suggestions.push('✅ Media/links: Plus engagement.');
     } else {
-        suggestions.push('❌ Mejora: Agrega links o media para P(click) y diversidad (evita author diversity penalty).');
+        suggestions.push('❌ Agrega media para diversidad.');
     }
 
-    // 6. Recordatorio general (del repo: Author Diversity Scorer, para @GlobalEye_TV nicho noticias)
-    suggestions.push('ℹ️ Tip para @GlobalEye_TV: Espacia posts noticiosos para evitar penalty por autor repetido. Usa videos globales para dwell alto.');
+    suggestions.push('ℹ️ Tip @GlobalEye_TV: Espacia posts para author diversity.');
 
-    // Ajuste final score (clamp 0-100)
     score = Math.max(0, Math.min(100, score));
-
-    // Clase de score (más estricta)
     const scoreClass = score >= 70 ? 'score-high' : score >= 40 ? 'score-medium' : 'score-low';
 
-    // HTML resultados
-    let resultsHtml = `<h2>Score Estimado (Simulación Weighted Scorer): <span class="score ${scoreClass}">${score}/${maxScore}</span></h2>`;
-    if (postId) resultsHtml += `<p>Post ID: ${postId} (usa para tracking en X).</p>`;
-    suggestions.forEach(s => {
-        resultsHtml += `<div class="suggestion">${s}</div>`;
-    });
+    let resultsHtml = `<h2>Score Estimado: <span class="score ${scoreClass}">${score}/${maxScore}</span></h2>`;
+    if (postId) resultsHtml += `<p>Post ID: ${postId}</p>`;
+    suggestions.forEach(s => resultsHtml += `<div class="suggestion">${s}</div>`);
 
-    // Post optimizado (más inteligente, basado en faltas)
-    let optimizedPost = optimizeText(textInput, { hasReplies: checkForReplies(textInput), hasVideos: checkForVideos(textInput), wordCount });
+    let optimizedPost = optimizeText(textInput, mediaInput, { hasReplies: checkForReplies(fullContent), hasVideos: checkForVideos(fullContent), hasMedia: checkForMedia(fullContent), wordCount });
     if (score < 70) {
-        resultsHtml += `<h3>Versión Optimizada Sugerida:</h3><p>${optimizedPost.replace(/\n/g, '<br>')}</p>`;
+        resultsHtml += `<h3>Versión Optimizada:</h3><p>${optimizedPost.replace(/\n/g, '<br>')}</p>`;
     }
 
     document.getElementById('results').innerHTML = resultsHtml;
 }
 
-// Funciones auxiliares (mejoradas con regex precisos, basadas en repo)
+// Funciones auxiliares (mismas que antes, regex precisos)
 function checkForReplies(text) {
-    const replyRegex = /\?|\b(qué piensas|qué opinas|comparte tu|dime|cuéntame|opinión|discute)\b/i;
-    return replyRegex.test(text);
+    return /\?|\b(qué piensas|qué opinas|comparte tu|dime|cuéntame|opinión|discute|reply|responde)\b/i.test(text);
 }
 
 function checkForVideos(text) {
-    const videoRegex = /\b(video|vídeo|clip|watch|ver|reel)\b/i;
-    return videoRegex.test(text);
+    return /\b(video|vídeo|clip|watch|ver|reel|corto|short|segundos|seg|duración)\b/i.test(text);
 }
 
 function checkForNegatives(text, wordCount) {
-    const uniqueWords = new Set(text.split(/\s+/)).size;
-    const repetitive = uniqueWords < wordCount * 0.75; // Más estricto que antes
-    const spammyRegex = /\b(compra|vende|gratis|oferta|descuento|urgente)\b/i; // Muted keywords comunes
-    return !repetitive && !spammyRegex.test(text);
+    const unique = new Set(text.split(/\s+/)).size;
+    const repetitive = unique < wordCount * 0.8;
+    const spammy = /\b(compra|vende|gratis|oferta|descuento|urgente|paywall|suscripción)\b/i.test(text);
+    return !repetitive && !spammy;
 }
 
 function checkForMedia(text) {
-    const mediaRegex = /\b(link|enlace|imagen|foto|video|media|url)\b/i || text.includes('http');
-    return mediaRegex.test(text);
+    return /\b(link|enlace|imagen|foto|video|media|url|http|https|jpg|png|gif|mp4)\b/i.test(text) || text.includes('http');
 }
 
-function optimizeText(text, { hasReplies, hasVideos, wordCount }) {
+function optimizeText(text, media, { hasReplies, hasVideos, hasMedia, wordCount }) {
     let optimized = text;
-    if (!hasReplies) optimized += '\n\n¿Qué opinas de esta noticia global? ¡Comparte en replies para más alcance!';
-    if (wordCount < 100) optimized += '\n(Agrega más detalles aquí para un thread engaging y mayor dwell time)';
-    if (!hasVideos) optimized += '\nMira este video corto relacionado: [inserta link o descripción]';
+    if (!hasReplies) optimized += '\n\n¿Qué opinas? ¡Responde abajo!';
+    if (wordCount < 100) optimized += '\n(Extiende para thread engaging)';
+    if (!hasVideos) optimized += '\nVideo corto: [agrega]';
+    if (!hasMedia) optimized += '\nImagen/link: [agrega]';
+    if (media) optimized += `\n\nMedia: ${media}`;
     optimized += '\n#GlobalEye_TV #NoticiasGlobales';
     return optimized;
 }
