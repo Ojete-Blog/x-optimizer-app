@@ -3,35 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer App v3.1 - Grow Your @GlobalEye_TV</title>
+    <title>X Optimizer App v3.2 - Grow Your @GlobalEye_TV</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>X Post Optimizer v3.1 for @GlobalEye_TV</h1>
-        <p>Basado en xai-org/x-algorithm. Pega URL → extrae ID + muestra preview real del post (con imágenes/videos). Luego pega texto/media para análisis preciso y optimización.</p>
-        <input type="text" id="postUrl" placeholder="URL del post en X (e.g., https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()">
+        <h1>X Post Optimizer v3.2 for @GlobalEye_TV</h1>
+        <p>Pega URL → extrae ID + intenta preview real (embed oficial X). Si se queda cargando, espera 10s o refresca (bug común X). Luego analiza texto/media.</p>
+        <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()">
         <div id="previewContainer" class="preview-box">
-            <p id="previewStatus">Pega la URL arriba para ver el preview del post (embed real de X).</p>
+            <p id="previewStatus">Pega URL para preview (puede tardar 5-10s en cargar el embed de X).</p>
             <div id="tweetEmbed"></div>
         </div>
-        <textarea id="postInput" placeholder="Pega el texto del post aquí (requerido para análisis)..."></textarea>
-        <textarea id="mediaInput" placeholder="Pega descripciones/URLs de media/links (opcional, pero ayuda precisión)"></textarea>
+        <textarea id="postInput" placeholder="Pega el texto del post aquí..."></textarea>
+        <textarea id="mediaInput" placeholder="Descripciones/URLs de media (opcional)"></textarea>
         <button onclick="optimizePost()">Optimizar Post</button>
         <div id="results"></div>
     </div>
 
-    <!-- Script de X widgets (cargado dinámicamente para no bloquear) -->
-    <script>
-        // Cargar widgets.js solo una vez
-        if (!document.getElementById('twitter-widgets')) {
-            const script = document.createElement('script');
-            script.id = 'twitter-widgets';
-            script.async = true;
-            script.src = 'https://platform.twitter.com/widgets.js';
-            document.body.appendChild(script);
-        }
-    </script>
+    <!-- Script X widgets (cargado una vez) -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8" id="twitter-widgets"></script>
+
     <script src="app.js"></script>
 </body>
 </html>

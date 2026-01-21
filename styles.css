@@ -1,86 +1,15 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f4f4f4;
-    color: #333;
-}
-
-h1 {
-    text-align: center;
-    color: #1DA1F2;
-}
-
-.container {
-    max-width: 800px;
-    margin: auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.url-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-textarea {
-    height: 120px;
-}
-
-button {
-    background: #1DA1F2;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    display: block;
-    margin: 10px auto 0;
-}
-
-button:hover {
-    background: #0c85d0;
-}
-
-#previewContainer {
-    margin: 15px 0;
-    padding: 10px;
-    border: 1px dashed #1DA1F2;
-    border-radius: 8px;
-    min-height: 100px;
-    background: #f9fcff;
-}
-
-.preview-box {
-    text-align: center;
-}
-
-#tweetEmbed {
-    margin: 10px auto;
-    max-width: 550px; /* Ancho típico de embeds X */
-}
-
-#results {
-    margin-top: 20px;
-}
-
-.suggestion {
-    margin-bottom: 10px;
-    padding: 10px;
-    background: #e7f3ff;
-    border-left: 5px solid #1DA1F2;
-    border-radius: 4px;
-}
-
-.score {
-    font-weight: bold;
-}
-
+body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; color: #333; }
+h1 { text-align: center; color: #1DA1F2; }
+.container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+.url-input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+textarea { height: 120px; }
+button { background: #1DA1F2; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; display: block; margin: 10px auto 0; }
+button:hover { background: #0c85d0; }
+#previewContainer { margin: 15px 0; padding: 15px; border: 2px dashed #1DA1F2; border-radius: 8px; min-height: 200px; background: #f9fcff; text-align: center; }
+#tweetEmbed { margin: 10px auto; max-width: 600px; }
+#previewStatus { font-style: italic; color: #555; }
+.suggestion { margin-bottom: 10px; padding: 10px; background: #e7f3ff; border-left: 5px solid #1DA1F2; border-radius: 4px; }
+.score { font-weight: bold; }
 .score-high { color: #28a745; }
 .score-medium { color: #ffc107; }
 .score-low { color: #dc3545; }
