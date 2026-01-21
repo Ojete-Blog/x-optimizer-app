@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer App - Grow Your @GlobalEye_TV</title>
+    <title>X Optimizer App v2.0 - Grow Your @GlobalEye_TV</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>X Post Optimizer for @GlobalEye_TV</h1>
-        <p>Basado en el algoritmo open-source de X (xai-org/x-algorithm). Enfócate en replies de calidad (peso alto en scorer), threads largos (alto dwell), videos cortos con hook, y evita negatives como "not interested". Ingresa tu post:</p>
-        <textarea id="postInput" placeholder="Escribe tu post aquí..."></textarea>
+        <h1>X Post Optimizer v2.0 for @GlobalEye_TV</h1>
+        <p>Basado en xai-org/x-algorithm (preciso con weighted scorer y filters). Enfócate en replies (+30 peso), dwell en threads largos (+20), videos cortos (+15), evita negatives (-20). Ingresa URL (opcional) y texto del post:</p>
+        <input type="text" id="postUrl" placeholder="URL del post en X (e.g., https://x.com/user/status/123456)" class="url-input">
+        <textarea id="postInput" placeholder="Pega el texto del post aquí (requerido para análisis preciso)..."></textarea>
         <button onclick="optimizePost()">Optimizar Post</button>
         <div id="results"></div>
     </div>
