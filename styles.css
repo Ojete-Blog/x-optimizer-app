@@ -5,14 +5,15 @@ h1 { text-align: center; color: #1DA1F2; }
 textarea { height: 120px; }
 button { background: #1DA1F2; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; display: block; margin: 10px auto 0; }
 button:hover { background: #0c85d0; }
-.auto-button { background: #0d6efd; } /* Azul más oscuro para auto */
+.auto-button { background: #0d6efd; }
+.manual-button { background: #198754; }
+.grok-button { background: #fd7e14; } /* Naranja para Grok */
 #previewContainer { margin: 15px 0; padding: 15px; border: 2px dashed #1DA1F2; border-radius: 8px; min-height: 250px; background: #f9fcff; text-align: center; }
-#tweetEmbed { margin: 10px auto; max-width: 600px; min-height: 200px; width: 100%; }
+#tweetEmbed { margin: 10px auto; max-width: 600px; width: 100%; }
 #previewStatus { font-style: italic; color: #555; margin-bottom: 10px; }
-.fallback-link { margin-top: 10px; font-size: 1.1em; color: #1DA1F2; text-decoration: underline; }
-.suggestion { margin-bottom: 10px; padding: 10px; background: #e7f3ff; border-left: 5px solid #1DA1F2; border-radius: 4px; }
-.score { font-weight: bold; }
+.suggestion { margin-bottom: 15px; padding: 12px; background: #e7f3ff; border-left: 6px solid #1DA1F2; border-radius: 4px; line-height: 1.5; }
+.score { font-weight: bold; font-size: 1.2em; }
 .score-high { color: #28a745; }
 .score-medium { color: #ffc107; }
 .score-low { color: #dc3545; }
-@media (max-width: 600px) { #tweetEmbed { max-width: 100%; } } /* Responsive */
+@media (max-width: 600px) { #tweetEmbed { max-width: 100%; } }
