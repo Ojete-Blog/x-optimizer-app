@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer App v5.0 - Grow Your @GlobalEye_TV</title>
+    <title>X Optimizer App v6.1 - Grow Your @GlobalEye_TV</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>X Post Optimizer v5.0 for @GlobalEye_TV</h1>
-        <p>Pega URL → preview + auto-investigación. Auto-Analizar genera informe detallado/extenso con mejoras específicas. Botón Grok genera prompt para análisis Premium en chat Grok.</p>
+        <h1>X Post Optimizer v6.1 for @GlobalEye_TV</h1>
+        <p>Pega URL para auto-investigación/preview, o usa manual. Auto-Analizar detecta link/manual y genera informe detallado. Generar Prompt crea texto para pegar en Grok (no abre directo, copia y pega manual en chat Grok).</p>
         <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()">
         <div id="previewContainer" class="preview-box">
-            <p id="previewStatus">Pega URL para preview/investigación (5-15s).</p>
+            <p id="previewStatus">Pega URL para preview/investigación, o usa manual abajo.</p>
             <div id="tweetEmbed"></div>
         </div>
-        <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar & Optimizar</button>
-        <textarea id="postInput" placeholder="Texto auto-fetch o manual..."></textarea>
-        <textarea id="mediaInput" placeholder="Media auto-detect o manual..."></textarea>
-        <button onclick="optimizePost()" class="manual-button">Optimizar Manual</button>
+        <textarea id="postInput" placeholder="Texto manual si no hay URL..."></textarea>
+        <textarea id="mediaInput" placeholder="Media manual si no hay URL..."></textarea>
+        <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar & Optimizar (detecta link/manual)</button>
         <button onclick="generateGrokPrompt()" class="grok-button">Generar Prompt para Grok</button>
         <div id="results"></div>
     </div>
