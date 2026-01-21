@@ -24,9 +24,6 @@ function loadPreview() {
         if (window.twttr && window.twttr.widgets && window.twttr.widgets.createTweet) {
             window.twttr.widgets.createTweet(postId, tweetEmbed, { lang: 'es', dnt: true }).then(() => {
                 previewStatus.textContent = 'Preview cargado – usa Auto-Analizar para informe detallado.';
-            }).catch((error) => {
-                console.error('Error loading tweet:', error);
-                previewStatus.textContent = 'Error al cargar preview – prueba refrescar.';
             });
         } else {
             setTimeout(tryRender, 2000);
@@ -40,7 +37,7 @@ function loadPreview() {
 }
 
 function fallback(url) {
-    document.getElementById('previewStatus').innerHTML = `No cargó embed – posiblemente bloqueo del navegador. <a href="${url}" target="_blank" class="fallback-link">Ver en X</a>`;
+    document.getElementById('previewStatus').innerHTML = `No cargó embed. <a href="${url}" target="_blank" class="fallback-link">Ver en X</a>`;
 }
 
 function autoAnalyze() {
@@ -62,9 +59,12 @@ function autoAnalyze() {
         if (embedDiv) {
             fetchedText = embedDiv.querySelector('p') ? embedDiv.querySelector('p').textContent.trim() : textInput || 'Texto no detectado - usa manual.';
             fetchedMedia = embedDiv.querySelector('img') ? 'Imagen detectada' : embedDiv.querySelector('video') ? 'Video detectado' : mediaInput || 'No media detectada.';
+            previewStatus.textContent = 'Investigación con link completa – informe detallado abajo.';
         } else {
             previewStatus.textContent = 'Embed no accesible - usando manual si disponible.';
         }
+    } else {
+        previewStatus.textContent = 'Investigando manual (sin link) – informe detallado abajo.';
     }
 
     if (!fetchedText && !fetchedMedia) {
@@ -72,7 +72,6 @@ function autoAnalyze() {
         return;
     }
 
-    previewStatus.textContent = 'Análisis completo (modo: ' + mode + ') – informe abajo.';
     generateReport(fetchedText, fetchedMedia, mode);
 }
 
@@ -147,7 +146,7 @@ function generateGrokPrompt() {
     const prompt = `Como Grok, analiza este post de @GlobalEye_TV con ${mode === 'link' ? 'URL "' + urlInput + '" (ID ${postId})' : 'texto manual'}: Texto: "${textInput}". Media: "${mediaInput}". Da informe detallado extenso: Score (weighted scorer), explicaciones paso a paso (P(reply)/dwell/video_view/negatives), mejoras específicas para replies/threads/videos, evitando negatives. Genera versión optimizada. Sé exhaustivo con Premium.`;
 
     const results = document.getElementById('results');
-    let promptHtml = '<div id="grokPromptContainer"><h3>Prompt para Grok (copia y pega en chat Grok – no abre directo):</h3><pre>' + prompt.replace(/\n/g, '<br>') + '</pre></div>';
+    let promptHtml = '<div id="grokPromptContainer"><h3>Prompt para Grok (copia y pega en chat Grok):</h3><pre>' + prompt.replace(/\n/g, '<br>').replace(/"/g, '&quot;') + '</pre><p>Modo detectado: ' + mode + '.</p></div>';
     results.innerHTML += promptHtml;
 }
 
