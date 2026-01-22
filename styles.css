@@ -1,23 +1,14 @@
-body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; color: #333; }
-h1 { text-align: center; color: #1DA1F2; }
-.container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-.url-input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-textarea { height: 120px; resize: vertical; }
-button { background: #1DA1F2; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; display: block; margin: 10px auto 0; }
-button:hover { background: #0c85d0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 20px; background: #000; color: #e0e0e0; }
+.container { max-width: 900px; margin: auto; background: #111; padding: 25px; border-radius: 12px; box-shadow: 0 4px 30px rgba(29,161,242,0.2); }
+h1, h3, h4 { color: #1DA1F2; }
+.url-input, textarea, input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #333; border-radius: 8px; background: #1a1a1a; color: white; box-sizing: border-box; }
+.api-keys { background: #1a1a1a; padding: 15px; border-radius: 8px; margin: 15px 0; }
+button { background: #1DA1F2; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 10px auto; display: block; }
 .auto-button { background: #0d6efd; }
 .grok-button { background: #fd7e14; }
-.copy-button { background: #28a745; margin-top: 10px; }
-.copy-button:hover { background: #218838; }
-#previewContainer { margin: 15px 0; padding: 15px; border: 2px dashed #1DA1F2; border-radius: 8px; min-height: 250px; background: #f9fcff; text-align: center; }
-#tweetEmbed { margin: 10px auto; max-width: 600px; width: 100%; }
-#previewStatus { font-style: italic; color: #555; margin-bottom: 10px; }
-.fallback-link { margin-top: 10px; font-size: 1.1em; color: #1DA1F2; text-decoration: underline; }
-.suggestion { margin-bottom: 15px; padding: 12px; background: #e7f3ff; border-left: 6px solid #1DA1F2; border-radius: 4px; line-height: 1.5; }
-.score { font-weight: bold; font-size: 1.2em; }
-.score-high { color: #28a745; }
-.score-medium { color: #ffc107; }
-.score-low { color: #dc3545; }
-#grokPromptContainer { margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; }
-#grokPromptContainer pre { background: #f8f9fa; padding: 10px; border: 1px solid #dee2e6; border-radius: 4px; overflow: auto; white-space: pre-wrap; word-wrap: break-word; }
-@media (max-width: 600px) { #tweetEmbed { max-width: 100%; } .container { padding: 10px; } }
+.preview-box { border: 2px dashed #1DA1F2; padding: 20px; min-height: 200px; text-align: center; background: #0a0a0a; border-radius: 8px; margin: 15px 0; }
+.suggestion { background: #0f1e3a; border-left: 5px solid #1DA1F2; padding: 12px; margin: 12px 0; border-radius: 6px; }
+.score-high { color: #00ff9d; }
+.score-medium { color: #ffcc00; }
+.score-low { color: #ff4444; }
+pre { background: #000; padding: 15px; border-radius: 8px; overflow: auto; white-space: pre-wrap; }

@@ -3,26 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer App v7.0 - Grow Your @GlobalEye_TV</title>
+    <title>X Optimizer v8.0 - @GlobalEye_TV con APIs Públicas</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>X Post Optimizer v7.0 for @GlobalEye_TV</h1>
-        <p>Pega URL para auto-investigación/preview, o usa manual. Auto-Analizar detecta link/manual y genera informe detallado. Generar Prompt crea texto visible para copiar y pegar en Grok (Premium). Mejoras v7.0: Checks adicionales (hashtags), optimización automática mejorada, botón de copiar prompt, handling de parsing iframe, sugerencias más precisas.</p>
-        <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()">
+        <h1>X Post Optimizer v8.0 – Maximiza @GlobalEye_TV</h1>
+        <p>Ahora con integración de APIs públicas (NewsAPI, sentiment, etc.) de <a href="https://publicapis.io" target="_blank">publicapis.io</a>. Agrega tus keys para enriquecer análisis.</p>
+        
+        <input type="text" id="postUrl" placeholder="URL post X (https://x.com/.../status/...)" class="url-input" oninput="loadPreview()">
         <div id="previewContainer" class="preview-box">
-            <p id="previewStatus">Pega URL para preview/investigación, o usa manual abajo.</p>
+            <p id="previewStatus">Pega URL para preview...</p>
             <div id="tweetEmbed"></div>
         </div>
-        <textarea id="postInput" placeholder="Texto manual si no hay URL o parsing falla..."></textarea>
-        <textarea id="mediaInput" placeholder="Media manual si no hay URL (ej: 'Imagen de noticia', 'Video corto')..."></textarea>
-        <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar & Optimizar (detecta link/manual)</button>
-        <button onclick="generateGrokPrompt()" class="grok-button">Generar Prompt para Grok</button>
+
+        <textarea id="postInput" placeholder="Texto del post (manual si embed falla)"></textarea>
+        <textarea id="mediaInput" placeholder="Media (ej: Video 15s | Imagen noticia global)"></textarea>
+
+        <div class="api-keys">
+            <h3>API Keys (opcional – de publicapis.io)</h3>
+            <input type="text" id="newsApiKey" placeholder="NewsAPI.org Key (para noticias relacionadas)">
+            <input type="text" id="sentimentApiKey" placeholder="Sentiment/NLP API Key (ej MeaningCloud)">
+            <button onclick="saveApiKeys()">Guardar Keys</button>
+        </div>
+
+        <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar + APIs Públicas</button>
+        <button onclick="generateGrokPrompt()" class="grok-button">Prompt para Grok</button>
+
         <div id="results"></div>
+        <div id="grokPromptContainer"></div>
     </div>
 
-    <script async src="https://platform.x.com/widgets.js" charset="utf-8" id="x-widgets"></script>
+    <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
     <script src="app.js"></script>
 </body>
 </html>
