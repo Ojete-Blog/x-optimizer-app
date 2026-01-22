@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer v8.0 - @GlobalEye_TV con APIs Públicas</title>
+    <title>X Optimizer v9.0 - @GlobalEye_TV con Mejores APIs 2026</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>X Post Optimizer v8.0 – Maximiza @GlobalEye_TV</h1>
-        <p>Ahora con integración de APIs públicas (NewsAPI, sentiment, etc.) de <a href="https://publicapis.io" target="_blank">publicapis.io</a>. Agrega tus keys para enriquecer análisis.</p>
+        <h1>X Post Optimizer v9.0 – Maximiza @GlobalEye_TV (Actualizado 2026)</h1>
+        <p>Ampliado con mejores APIs: NewsData.io (mejor cobertura), Twinword Sentiment (mejor free sentiment 2026). Mejor visualización con tablas y gráficos Chart.js. Compatible con navegadores modernos, responsive.</p>
         
         <input type="text" id="postUrl" placeholder="URL post X (https://x.com/.../status/...)" class="url-input" oninput="loadPreview()">
         <div id="previewContainer" class="preview-box">
@@ -21,13 +22,14 @@
         <textarea id="mediaInput" placeholder="Media (ej: Video 15s | Imagen noticia global)"></textarea>
 
         <div class="api-keys">
-            <h3>API Keys (opcional – de publicapis.io)</h3>
-            <input type="text" id="newsApiKey" placeholder="NewsAPI.org Key (para noticias relacionadas)">
-            <input type="text" id="sentimentApiKey" placeholder="Sentiment/NLP API Key (ej MeaningCloud)">
+            <h3>API Keys (de publicapis.io y mejores 2026)</h3>
+            <input type="text" id="newsApiKey" placeholder="NewsAPI.org Key">
+            <input type="text" id="newsdataApiKey" placeholder="NewsData.io Key (mejor cobertura free)">
+            <input type="text" id="sentimentApiKey" placeholder="Twinword Sentiment Key (free 9k words/mo)">
             <button onclick="saveApiKeys()">Guardar Keys</button>
         </div>
 
-        <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar + APIs Públicas</button>
+        <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar + Mejores APIs</button>
         <button onclick="generateGrokPrompt()" class="grok-button">Prompt para Grok</button>
 
         <div id="results"></div>
