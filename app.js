@@ -10,6 +10,7 @@ function loadPreview() {
     const previewStatus = document.getElementById('previewStatus');
     const tweetEmbed = document.getElementById('tweetEmbed');
 
+    previewStatus.textContent = 'Cargando preview...'; // Inicio de loading
     tweetEmbed.innerHTML = '';
     if (!urlInput) {
         previewStatus.textContent = 'Pega la URL para preview e investigación auto.';
@@ -123,6 +124,7 @@ async function autoAnalyze() {
     const textInput = document.getElementById('postInput').value.trim();
     const mediaInput = document.getElementById('mediaInput').value.trim();
     const previewStatus = document.getElementById('previewStatus');
+    const results = document.getElementById('results');
 
     previewStatus.textContent = 'Analizando... (detectando modo)';
 
@@ -131,10 +133,14 @@ async function autoAnalyze() {
     let fetchedMedia = mediaInput;
 
     if (mode === 'link' && !fetchedText && !fetchedMedia) {
-        previewStatus.textContent = 'Modo link detectado, pero sin texto/media manual. Análisis básico con suposiciones (agrega texto para precisión). O usa Prompt para Grok.';
+        previewStatus.textContent = 'Modo link: No hay texto/media manual. Generando análisis genérico y sugiriendo análisis preciso con Grok.';
+        fetchedText = 'Post de @GlobalEye_TV sobre noticias globales (supuesto basado en URL). Para precisión, usa Prompt para Grok.';
+        generateGrokPrompt(); // Genera prompt automáticamente
     } else if (!fetchedText && !fetchedMedia && !urlInput) {
         previewStatus.textContent = 'No hay contenido suficiente. Pega URL, texto o media.';
         return;
+    } else {
+        previewStatus.textContent = 'Análisis en progreso...';
     }
 
     const fullContent = fetchedText + (fetchedMedia ? ' ' + fetchedMedia : '') || 'Contenido de post de noticias globales (supuesto para análisis básico)';
@@ -142,7 +148,8 @@ async function autoAnalyze() {
     // Enriquecimiento con APIs (opcional)
     const enrichmentHtml = await enrichWithPublicApis(fetchedText || fullContent);
 
-    generateReport(fetchedText || '[Texto no proporcionado - análisis genérico]', fetchedMedia || '[Sin media]', mode, enrichmentHtml);
+    generateReport(fetchedText || '[Texto no proporcionado - análisis genérico para @GlobalEye_TV]', fetchedMedia || '[Sin media]', mode, enrichmentHtml);
+    previewStatus.textContent = 'Análisis completo. Revisa abajo.';
 }
 
 function generateReport(text, media, mode, enrichmentHtml) {
@@ -154,53 +161,53 @@ function generateReport(text, media, mode, enrichmentHtml) {
     // Checks mejorados
     if (checkForReplies(fullContent)) {
         score += 30;
-        suggestions.push('✅ Invitación a replies fuerte → +30 (P(reply) alto). Mejora: Agrega preguntas específicas.');
+        suggestions.push('✅ Invitación a replies fuerte → +30 (P(reply) alto). Mejora: Agrega preguntas específicas como "¿Cómo impacta esto en tu región?".');
     } else {
-        suggestions.push('❌ Sin replies → Agrega "¿Qué opinas?" para +30.');
+        suggestions.push('❌ Sin replies → Agrega "¿Qué opinas?" para +30. Ideal para debates en @GlobalEye_TV.');
     }
 
     const wordCount = fullContent.split(/\s+/).length;
     if (wordCount > 100) {
         score += 20;
-        suggestions.push('✅ Buen dwell time (>100 palabras) → +20. Mejora: Usa threads.');
+        suggestions.push('✅ Buen dwell time (>100 palabras) → +20. Mejora: Usa threads para noticias extensas.');
     } else {
-        suggestions.push('❌ Corto → Extiende para +20.');
+        suggestions.push('❌ Corto → Extiende con subpuntos para +20. Ej: 1. Contexto, 2. Impacto.');
     }
 
     if (checkForVideos(fullContent) || media.toLowerCase().includes('video')) {
         score += 15;
-        suggestions.push('✅ Video → +15. Mejora: Hook rápido.');
+        suggestions.push('✅ Video → +15. Mejora: Hook rápido en primeros 3s para alto P(video_view).');
     } else {
-        suggestions.push('❌ Sin video → Agrega para +15.');
+        suggestions.push('❌ Sin video → Agrega clip corto para +15. Perfecto para noticias visuales.');
     }
 
     if (checkForNegatives(fullContent, wordCount)) {
         score += 20;
-        suggestions.push('✅ Bajo riesgo negatives → +20.');
+        suggestions.push('✅ Bajo riesgo negatives → +20. Mantén tono informativo y neutral.');
     } else {
         score -= 15;
-        suggestions.push('❌ Riesgo negatives → Limpia spam.');
+        suggestions.push('❌ Riesgo negatives → Limpia repeticiones o spam para recuperación +20.');
     }
 
     if (checkForMedia(fullContent) || media) {
         score += 15;
-        suggestions.push('✅ Media → +15. Mejora: Optimiza.');
+        suggestions.push('✅ Media → +15. Mejora: Agrega alt-text descriptivo para accesibilidad.');
     } else {
-        suggestions.push('❌ Sin media → Agrega para +15.');
+        suggestions.push('❌ Sin media → Agrega imagen/video para +15 y mejor P(click).');
     }
 
     if (checkForHashtags(fullContent)) {
         score += 10;
-        suggestions.push('✅ Hashtags → +10.');
+        suggestions.push('✅ Hashtags → +10. Mejora: Usa relevantes como #NoticiasGlobales.');
     } else {
-        suggestions.push('❌ Sin hashtags → Agrega #GlobalEye_TV.');
+        suggestions.push('❌ Sin hashtags → Agrega #GlobalEye_TV para +10 y mejor discovery.');
     }
 
     if (/\b(http|https):\/\/\S+/i.test(fullContent)) {
         score += 10;
-        suggestions.push('✅ Enlaces → +10. Mejora: Fuentes confiables.');
+        suggestions.push('✅ Enlaces → +10. Mejora: Fuentes confiables para credibilidad.');
     } else {
-        suggestions.push('❌ Sin enlaces → Agrega para +10.');
+        suggestions.push('❌ Sin enlaces → Agrega fuente externa para +10 y P(share).');
     }
 
     score = Math.max(0, Math.min(100, score));
@@ -208,26 +215,26 @@ function generateReport(text, media, mode, enrichmentHtml) {
     const scoreClass = score >= 70 ? 'score-high' : score >= 40 ? 'score-medium' : 'score-low';
 
     let resultsHtml = `<h2>Score Estimado: <span class="${scoreClass}">${score}/${maxScore}</span></h2>`;
-    resultsHtml += `<p>Modo: ${mode} | ID: ${postId || 'manual'} | Análisis funciona sin APIs obligatorias.</p>`;
+    resultsHtml += `<p>Modo: ${mode} | ID: ${postId || 'manual'} | Análisis funciona sin APIs obligatorias. (v11.0 - Mejorado 2026)</p>`;
     resultsHtml += enrichmentHtml;
 
-    resultsHtml += '<h3>Sugerencias:</h3><table class="suggestions-table"><thead><tr><th>Estado</th><th>Descripción</th></tr></thead><tbody>';
+    resultsHtml += '<h3>Sugerencias Detalladas:</h3><table class="suggestions-table"><thead><tr><th>Estado</th><th>Descripción</th></tr></thead><tbody>';
     suggestions.forEach(s => {
         const [status, desc] = s.split(' → ');
         resultsHtml += `<tr><td>${status}</td><td>${desc}</td></tr>`;
     });
     resultsHtml += '</tbody></table>';
 
-    resultsHtml += '<h3>Visualización:</h3><canvas id="scoreChart" width="300" height="300"></canvas>';
+    resultsHtml += '<h3>Visualización de Score:</h3><div style="max-width: 400px; margin: auto;"><canvas id="scoreChart" width="400" height="400"></canvas></div>';
 
     let optimized = text.trim();
-    if (!checkForHashtags(optimized)) optimized += ' #GlobalEye_TV';
-    if (!checkForReplies(optimized)) optimized += '\n\n¿Qué opinas? ¡Replies!';
-    if (wordCount < 100) optimized += '\n\nAmplía aquí.';
-    if (media) optimized += `\n\n${media}`;
-    if (!/\b(http|https):\/\/\S+/i.test(optimized)) optimized += '\n\nFuente: [link]';
+    if (!checkForHashtags(optimized)) optimized += ' #GlobalEye_TV #NoticiasGlobales';
+    if (!checkForReplies(optimized)) optimized += '\n\n¿Qué opinas sobre esta noticia global? ¡Comparte en replies! 👇';
+    if (wordCount < 100) optimized += '\n\nContexto adicional: Amplía con detalles específicos para más dwell time. Usa threads: 1/3 Intro, 2/3 Análisis, 3/3 Conclusión.';
+    if (media) optimized += `\n\nMedia: ${media}`;
+    if (!/\b(http|https):\/\/\S+/i.test(optimized)) optimized += '\n\nFuente: [Agrega link relevante aquí para aumentar engagement]';
 
-    resultsHtml += `<h3>Optimizada:</h3><p>${optimized.replace(/\n/g, '<br>')}</p>`;
+    resultsHtml += `<h3>Versión Optimizada (Mejorada):</h3><p>${optimized.replace(/\n/g, '<br>')}</p>`;
 
     document.getElementById('results').innerHTML = resultsHtml;
 
@@ -241,29 +248,35 @@ function generateReport(text, media, mode, enrichmentHtml) {
                 backgroundColor: [score >= 70 ? '#00ff9d' : score >= 40 ? '#ffcc00' : '#ff4444', '#333']
             }]
         },
-        options: { responsive: true, plugins: { legend: { display: false } } }
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true, position: 'bottom' },
+                title: { display: true, text: 'Score de Optimización' }
+            }
+        }
     });
 }
 
 function generateGrokPrompt() {
     const url = document.getElementById('postUrl').value.trim();
-    const text = document.getElementById('postInput').value.trim() || '[texto]';
-    const media = document.getElementById('mediaInput').value.trim() || '[media]';
+    const text = document.getElementById('postInput').value.trim() || '[pega texto del post si lo tienes]';
+    const media = document.getElementById('mediaInput').value.trim() || '[describe media si aplica]';
     const mode = url ? 'link' : 'manual';
 
-    const prompt = `Analiza post @GlobalEye_TV. Modo: ${mode} | URL: ${url} | ID: ${postId}
-Texto: "${text}"
-Media: "${media}"
-Usa x_thread_fetch si ID. Informe: Score, P(reply/dwell/etc), mejoras, optimizada. Exhaustivo.`;
+    const prompt = `Como Grok, analiza este post de @GlobalEye_TV con ${mode === 'link' ? 'URL "' + url + '" (ID ${postId})' : 'texto manual'}. 
+Usa x_thread_fetch con post_id ${postId || 'N/A'} para fetch contenido preciso. Texto: "${text}". Media: "${media}".
+Da informe detallado extenso: Score (weighted scorer), explicaciones paso a paso (P(reply)/dwell/video_view/negatives), mejoras específicas para replies/threads/videos/hashtags/enlaces, evitando negatives. 
+Genera versión optimizada. Sé exhaustivo con Premium, considera algorithm de X para optimizaciones avanzadas (For You reach). Usa tablas si ayuda.`;
 
     const container = document.getElementById('grokPromptContainer');
-    container.innerHTML = `<h3>Prompt Grok:</h3><pre>${prompt}</pre><button onclick="copyPrompt()">Copiar</button>`;
-    document.getElementById('results').appendChild(container);
+    container.innerHTML = `<h3>Prompt para Grok (copia y pega en chat Grok):</h3><pre>${prompt}</pre><button onclick="copyPrompt()">Copiar Prompt</button><p>Modo detectado: ${mode}. Para análisis preciso, pega este prompt en el chat conmigo (Grok) – usaré tools internas.</p>`;
+    container.style.display = 'block'; // Asegura visibilidad
 }
 
 function copyPrompt() {
     const pre = document.querySelector('#grokPromptContainer pre');
-    navigator.clipboard.writeText(pre.textContent).then(() => alert('Copiado!')).catch(err => alert('Error: ' + err));
+    navigator.clipboard.writeText(pre.textContent).then(() => alert('Prompt copiado! Pégalo en el chat con Grok para análisis real.')).catch(err => alert('Error: ' + err));
 }
 
 // Helpers
