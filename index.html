@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer App v6.2 - Grow Your @GlobalEye_TV</title>
+    <title>X Optimizer App v7.0 - Grow Your @GlobalEye_TV</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>X Post Optimizer v6.2 for @GlobalEye_TV</h1>
-        <p>Pega URL para auto-investigación/preview, o usa manual. Auto-Analizar detecta link/manual y genera informe detallado. Generar Prompt crea texto visible para copiar y pegar en Grok (Premium).</p>
+        <h1>X Post Optimizer v7.0 for @GlobalEye_TV</h1>
+        <p>Pega URL para auto-investigación/preview, o usa manual. Auto-Analizar detecta link/manual y genera informe detallado. Generar Prompt crea texto visible para copiar y pegar en Grok (Premium). Mejoras v7.0: Checks adicionales (hashtags), optimización automática mejorada, botón de copiar prompt, handling de parsing iframe, sugerencias más precisas.</p>
         <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()">
         <div id="previewContainer" class="preview-box">
             <p id="previewStatus">Pega URL para preview/investigación, o usa manual abajo.</p>
             <div id="tweetEmbed"></div>
         </div>
-        <textarea id="postInput" placeholder="Texto manual si no hay URL..."></textarea>
-        <textarea id="mediaInput" placeholder="Media manual si no hay URL..."></textarea>
+        <textarea id="postInput" placeholder="Texto manual si no hay URL o parsing falla..."></textarea>
+        <textarea id="mediaInput" placeholder="Media manual si no hay URL (ej: 'Imagen de noticia', 'Video corto')..."></textarea>
         <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar & Optimizar (detecta link/manual)</button>
         <button onclick="generateGrokPrompt()" class="grok-button">Generar Prompt para Grok</button>
         <div id="results"></div>
