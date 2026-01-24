@@ -1,3 +1,4 @@
+/* Estilos base para X Optimizer */
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 20px; background: #000; color: #e0e0e0; }
 h1 { text-align: center; color: #1DA1F2; }
 .container { max-width: 900px; margin: auto; background: #111; padding: 25px; border-radius: 12px; box-shadow: 0 4px 30px rgba(29,161,242,0.2); }
@@ -8,7 +9,7 @@ button { background: #1DA1F2; color: white; padding: 12px 24px; border: none; bo
 button:hover { opacity: 0.9; }
 .auto-button { background: #0d6efd; }
 .grok-button { background: #fd7e14; }
-.prominent { background: #ff6b00; font-size: 1.2em; padding: 15px 30px; } /* Más prominente */
+.prominent { background: #ff6b00; font-size: 1.2em; padding: 15px 30px; }
 #previewContainer { margin: 15px 0; padding: 15px; border: 2px dashed #1DA1F2; border-radius: 8px; min-height: 250px; background: #0a0a0a; text-align: center; }
 #tweetEmbed { margin: 10px auto; max-width: 600px; width: 100%; }
 #previewStatus { font-style: italic; color: #555; margin-bottom: 10px; }
@@ -24,4 +25,36 @@ button:hover { opacity: 0.9; }
 #grokPromptContainer pre { background: #0a0a0a; padding: 10px; border: 1px solid #333; border-radius: 4px; overflow: auto; white-space: pre-wrap; word-wrap: break-word; color: #e0e0e0; }
 .highlight-message { background: #1a3a5a; color: white; padding: 20px; border-radius: 12px; margin: 20px 0; text-align: center; font-size: 1.1em; border: 1px solid #1DA1F2; }
 .api-keys { background: #1a1a1a; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #333; }
+
 @media (max-width: 600px) { #tweetEmbed { max-width: 100%; } }
+
+/* ────────────────────────────── Anuncios ────────────────────────────── */
+.adBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 20px 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+}
+.adBanner img {
+  max-width: 180px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+/* Botón para suscribirse y eliminar anuncios */
+.sub-button {
+  background: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.sub-button:hover { opacity: 0.9; }
+.hidden { display: none !important; }

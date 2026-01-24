@@ -4,45 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>X Optimizer App v11.0 - Grow Your @GlobalEye_TV</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- Hoja de estilos -->
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>X Post Optimizer v11.0 for @GlobalEye_TV</h1>
-        <p>Actualizado: Análisis siempre procede (incluso sin texto manual, con fallback genérico). Mejoras: Flujo con Grok optimizado, sugerencias más específicas, chart mejorado, prompt auto-generado si falta texto. Funciona perfectamente sin APIs.</p>
-        
+        <p>Actualizado: Análisis siempre procede (incluso sin texto manual, con fallback genérico). Mejoras: Flujo con Grok optimizado, sugerencias más específicas, chart mejorado, prompt auto‑generado si falta texto. Funciona perfectamente sin APIs.</p>
+
         <div class="highlight-message">
-            <strong>Mejor experiencia (2026):</strong><br>
-            1. Pega la URL del post<br>
-            2. Pulsa "Generar Prompt para Grok"<br>
-            3. Copia el texto<br>
+            <strong>Mejor experiencia (2026):</strong><br />
+            1. Pega la URL del post<br />
+            2. Pulsa "Generar Prompt para Grok"<br />
+            3. Copia el texto<br />
             4. Pégalo en este chat conmigo (Grok) – fetcharé el post real con x_thread_fetch y daré análisis completo.
         </div>
 
-        <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()">
+        <!-- Banner de publicidad (visible solo si no estás suscrito) -->
+        <div id="adBanner" class="adBanner hidden" role="complementary" aria-label="Publicidad">
+            <a id="adLink" href="#" target="_blank" rel="noreferrer">
+                <img id="adImage" src="" alt="Publicidad" loading="lazy" />
+            </a>
+            <!-- Botón inline para activar suscripción y ocultar anuncios -->
+            <button id="btnSubscribeInline" class="sub-button" type="button">Sin anuncios 1$</button>
+        </div>
+
+        <!-- Campo para URL y preview -->
+        <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()" />
         <div id="previewContainer" class="preview-box">
             <p id="previewStatus">Pega URL para preview/investigación, o usa manual abajo.</p>
             <div id="tweetEmbed"></div>
         </div>
+
+        <!-- Inputs manuales -->
         <textarea id="postInput" placeholder="Texto manual si no hay URL o parsing falla..."></textarea>
         <textarea id="mediaInput" placeholder="Media manual (ej: 'Imagen de noticia', 'Video corto')..."></textarea>
-        
+
+        <!-- API keys opcionales -->
         <div class="api-keys">
             <h3>API Keys (opcional para enriquecimiento)</h3>
-            <input type="text" id="newsApiKey" placeholder="NewsAPI.org Key">
-            <input type="text" id="newsdataApiKey" placeholder="NewsData.io Key">
-            <input type="text" id="sentimentApiKey" placeholder="Twinword Sentiment Key">
+            <input type="text" id="newsApiKey" placeholder="NewsAPI.org Key" />
+            <input type="text" id="newsdataApiKey" placeholder="NewsData.io Key" />
+            <input type="text" id="sentimentApiKey" placeholder="Twinword Sentiment Key" />
             <button onclick="saveApiKeys()">Guardar Keys</button>
         </div>
 
-        <button onclick="autoAnalyze()" class="auto-button">Auto-Analizar & Optimizar</button>
+        <!-- Botón principal de suscripción (visible siempre, cambia de texto al suscribirse) -->
+        <button id="btnSubscribe" class="sub-button" type="button">Sin anuncios 1$</button>
+
+        <!-- Acciones -->
+        <button onclick="autoAnalyze()" class="auto-button">Auto‑Analizar &amp; Optimizar</button>
         <button onclick="generateGrokPrompt()" class="grok-button prominent">Generar Prompt para Grok (Recomendado para precisión)</button>
         <div id="grokPromptContainer" style="display: none;"></div>
         <div id="results"></div>
     </div>
 
+    <!-- Librería de widgets de X -->
     <script async src="https://platform.x.com/widgets.js" charset="utf-8" id="x-widgets"></script>
+    <!-- Lógica principal -->
     <script src="app.js"></script>
 </body>
 </html>
