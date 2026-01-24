@@ -22,13 +22,16 @@
             4. Pégalo en este chat conmigo (Grok) – fetcharé el post real con x_thread_fetch y daré análisis completo.
         </div>
 
-        <!-- Banner de publicidad (visible solo si no estás suscrito) -->
-        <div id="adBanner" class="adBanner hidden" role="complementary" aria-label="Publicidad">
-            <a id="adLink" href="#" target="_blank" rel="noreferrer">
-                <img id="adImage" src="" alt="Publicidad" loading="lazy" />
-            </a>
-            <!-- Botón inline para activar suscripción y ocultar anuncios -->
-            <button id="btnSubscribeInline" class="sub-button" type="button">Sin anuncios 1$</button>
+        <!-- Popup de publicidad (visible solo si no estás suscrito). Cubre toda la pantalla y se puede cerrar -->
+        <div id="adOverlay" class="ad-overlay" role="dialog" aria-label="Publicidad emergente">
+            <div class="ad-content">
+                <button id="closeAd" class="ad-close" type="button" aria-label="Cerrar anuncio">×</button>
+                <a id="adLink" href="#" target="_blank" rel="noopener noreferrer">
+                    <img id="adImage" src="" alt="Publicidad" loading="lazy" />
+                </a>
+                <!-- Botón inline dentro del popup para activar suscripción y ocultar anuncios -->
+                <button id="btnSubscribeInline" class="sub-button" type="button">Sin anuncios 1€</button>
+            </div>
         </div>
 
         <!-- Campo para URL y preview -->
@@ -52,7 +55,7 @@
         </div>
 
         <!-- Botón principal de suscripción (visible siempre, cambia de texto al suscribirse) -->
-        <button id="btnSubscribe" class="sub-button" type="button">Sin anuncios 1$</button>
+        <button id="btnSubscribe" class="sub-button" type="button">Sin anuncios 1€</button>
 
         <!-- Acciones -->
         <button onclick="autoAnalyze()" class="auto-button">Auto‑Analizar &amp; Optimizar</button>

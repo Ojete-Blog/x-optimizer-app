@@ -29,22 +29,54 @@ button:hover { opacity: 0.9; }
 @media (max-width: 600px) { #tweetEmbed { max-width: 100%; } }
 
 /* ────────────────────────────── Anuncios ────────────────────────────── */
-.adBanner {
+/* Popup de publicidad que cubre toda la pantalla */
+.ad-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 20px 0;
-  padding: 12px;
-  border-radius: 8px;
-  background: #1a1a1a;
-  border: 1px solid #333;
+  z-index: 10000;
 }
-.adBanner img {
-  max-width: 180px;
+
+/* Contenedor interno del popup */
+.ad-content {
+  position: relative;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: auto;
+  text-align: center;
+}
+
+/* Imagen dentro del anuncio */
+.ad-content img {
+  max-width: 100%;
   height: auto;
   border-radius: 8px;
-  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+/* Botón de cierre del anuncio */
+.ad-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 28px;
+  color: #eee;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.ad-close:hover {
+  color: #aaa;
 }
 /* Botón para suscribirse y eliminar anuncios */
 .sub-button {

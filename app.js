@@ -305,51 +305,77 @@ function checkForHashtags(t) { return /#[\wáéíóú]+/.test(t); }
 
 /*
  * ───────────────────────────── Anuncios & Suscripción ─────────────────────────────
- * A continuación se implementa un sistema sencillo de anuncios que carga imágenes aleatorias
- * desde Picsum Photos (sin necesidad de API key)【993678427988795†L123-L134】【993678427988795†L177-L183】.
- * El usuario puede activar una suscripción local (simulada) para ocultar los anuncios.
+ * Se implementa un sistema de anuncios emergentes (popup) que cubre toda la pantalla.
+ * Las imágenes proceden de Picsum Photos, un servicio que opera mediante URL y no requiere claves de API【993678427988795†L123-L125】【993678427988795†L177-L183】.
+ * El usuario puede cerrar el anuncio para continuar gratis o suscribirse por 1 € al mes, lo cual oculta todos los anuncios durante 30 días.
  */
 
-const LS_SUB = 'xo_sub_v1';
+// Clave para almacenar la fecha de expiración de la suscripción en localStorage
+const LS_SUB_EXPIRY = 'xo_sub_expiry_v2';
 
+/**
+ * Devuelve true si la suscripción está vigente (antes de la fecha de expiración almacenada).
+ */
 function isSubscribed() {
     try {
-        return localStorage.getItem(LS_SUB) === '1';
+        const exp = parseInt(localStorage.getItem(LS_SUB_EXPIRY), 10);
+        if (!exp) return false;
+        if (Date.now() < exp) return true;
+        // Si la fecha ya expiró, elimina el valor almacenado
+        localStorage.removeItem(LS_SUB_EXPIRY);
+        return false;
     } catch {
         return false;
     }
 }
 
+/**
+ * Activa o desactiva la suscripción.
+ * Si se activa, se almacena la fecha de expiración (30 días a partir de ahora) en localStorage.
+ */
 function setSubscribed(val) {
     try {
-        localStorage.setItem(LS_SUB, val ? '1' : '0');
+        if (val) {
+            const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+            const expiry = Date.now() + thirtyDaysMs;
+            localStorage.setItem(LS_SUB_EXPIRY, String(expiry));
+        } else {
+            localStorage.removeItem(LS_SUB_EXPIRY);
+        }
     } catch {}
 }
 
+/**
+ * Actualiza la interfaz según el estado de suscripción. Modifica los textos de los botones y oculta el popup si procede.
+ */
 function updateSubscriptionUI() {
     const sub = isSubscribed();
-    const adBanner = document.getElementById('adBanner');
-    if (adBanner) {
-        if (sub) adBanner.classList.add('hidden');
-        else adBanner.classList.remove('hidden');
+    const overlay = document.getElementById('adOverlay');
+    if (overlay) {
+        if (sub) overlay.classList.add('hidden');
     }
     const btn1 = document.getElementById('btnSubscribe');
     const btn2 = document.getElementById('btnSubscribeInline');
     if (btn1) {
-        btn1.textContent = sub ? 'Suscrito' : 'Sin anuncios 1$';
+        btn1.textContent = sub ? 'Suscrito' : 'Sin anuncios 1€';
+        btn1.disabled = false;
     }
     if (btn2) {
-        btn2.textContent = sub ? 'Gracias' : 'Sin anuncios 1$';
+        btn2.textContent = sub ? 'Gracias' : 'Sin anuncios 1€';
         btn2.disabled = sub;
     }
 }
 
+/**
+ * Carga una nueva imagen para el anuncio desde Picsum Photos.
+ */
 function loadAd() {
     if (isSubscribed()) return;
     const img = document.getElementById('adImage');
     const link = document.getElementById('adLink');
     const seed = Math.floor(Math.random() * 1000000);
-    const urlImg = `https://picsum.photos/seed/${seed}/400/200`;
+    // Imágenes de mayor resolución para el popup
+    const urlImg = `https://picsum.photos/seed/${seed}/600/400`;
     if (img) {
         img.src = urlImg;
         img.alt = 'Publicidad';
@@ -359,26 +385,57 @@ function loadAd() {
     }
 }
 
+/**
+ * Muestra el popup de anuncios si el usuario no está suscrito.
+ */
+function showAdOverlay() {
+    if (isSubscribed()) return;
+    const overlay = document.getElementById('adOverlay');
+    if (overlay) {
+        loadAd();
+        overlay.classList.remove('hidden');
+    }
+}
+
+/**
+ * Cierra el popup de anuncios.
+ */
+function closeAdOverlay() {
+    const overlay = document.getElementById('adOverlay');
+    if (overlay) overlay.classList.add('hidden');
+}
+
+/**
+ * Inicializa el sistema de anuncios: asigna manejadores a los botones, muestra el popup inicial y programa popups periódicos.
+ */
 function initAds() {
     updateSubscriptionUI();
-    loadAd();
     const btn1 = document.getElementById('btnSubscribe');
     const btn2 = document.getElementById('btnSubscribeInline');
+    const closeBtn = document.getElementById('closeAd');
     const subscribeHandler = () => {
         if (!isSubscribed()) {
             setSubscribed(true);
             updateSubscriptionUI();
-            alert('Suscripción activada. ¡Gracias por apoyar! Los anuncios han sido eliminados.');
+            closeAdOverlay();
+            alert('Suscripción activada por 30 días. ¡Gracias por apoyar!');
         } else {
             alert('Ya estás suscrito.');
         }
     };
     if (btn1) btn1.addEventListener('click', subscribeHandler);
     if (btn2) btn2.addEventListener('click', subscribeHandler);
-    // Recarga los anuncios cada 60 segundos
-    setInterval(() => {
-        loadAd();
-    }, 60000);
+    if (closeBtn) closeBtn.addEventListener('click', () => {
+        closeAdOverlay();
+    });
+    // Mostrar anuncio al cargar
+    if (!isSubscribed()) {
+        showAdOverlay();
+        // Programar anuncios periódicos cada 2 minutos (120000 ms)
+        setInterval(() => {
+            showAdOverlay();
+        }, 120000);
+    }
 }
 
 // Inicializa los anuncios cuando el DOM esté listo
