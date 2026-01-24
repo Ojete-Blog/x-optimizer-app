@@ -311,7 +311,7 @@ function checkForHashtags(t) { return /#[\wáéíóú]+/.test(t); }
  */
 
 // Clave para almacenar la fecha de expiración de la suscripción en localStorage
-const LS_SUB_EXPIRY = 'xo_sub_expiry_v2';
+const LS_SUB_EXPIRY = 'xo_sub_expiry';
 
 /**
  * Devuelve true si la suscripción está vigente (antes de la fecha de expiración almacenada).
@@ -351,11 +351,12 @@ function setSubscribed(val) {
 function updateSubscriptionUI() {
     const sub = isSubscribed();
     const overlay = document.getElementById('adOverlay');
-    if (overlay) {
-        if (sub) overlay.classList.add('hidden');
-    }
+    if (overlay && sub) overlay.classList.add('hidden');
+    const footer = document.getElementById('footerAd');
+    if (footer && sub) footer.classList.add('hidden');
     const btn1 = document.getElementById('btnSubscribe');
     const btn2 = document.getElementById('btnSubscribeInline');
+    const btn3 = document.getElementById('btnSubscribeFooter');
     if (btn1) {
         btn1.textContent = sub ? 'Suscrito' : 'Sin anuncios 1€';
         btn1.disabled = false;
@@ -363,6 +364,10 @@ function updateSubscriptionUI() {
     if (btn2) {
         btn2.textContent = sub ? 'Gracias' : 'Sin anuncios 1€';
         btn2.disabled = sub;
+    }
+    if (btn3) {
+        btn3.textContent = sub ? 'Gracias' : 'Sin anuncios 1€';
+        btn3.disabled = sub;
     }
 }
 
@@ -383,6 +388,44 @@ function loadAd() {
     if (link) {
         link.href = 'https://picsum.photos/';
     }
+}
+
+/**
+ * Carga una nueva imagen para el anuncio de pie de página.
+ */
+function loadFooterAd() {
+    if (isSubscribed()) return;
+    const img = document.getElementById('footerAdImage');
+    const link = document.getElementById('footerAdLink');
+    const seed = Math.floor(Math.random() * 1000000);
+    const urlImg = `https://picsum.photos/seed/${seed}/600/200`;
+    if (img) {
+        img.src = urlImg;
+        img.alt = 'Publicidad';
+    }
+    if (link) {
+        link.href = 'https://picsum.photos/';
+    }
+}
+
+/**
+ * Muestra el anuncio de pie de página si el usuario no está suscrito.
+ */
+function showFooterAd() {
+    if (isSubscribed()) return;
+    const footer = document.getElementById('footerAd');
+    if (footer) {
+        loadFooterAd();
+        footer.classList.remove('hidden');
+    }
+}
+
+/**
+ * Oculta el anuncio de pie de página.
+ */
+function closeFooterAd() {
+    const footer = document.getElementById('footerAd');
+    if (footer) footer.classList.add('hidden');
 }
 
 /**
@@ -412,12 +455,15 @@ function initAds() {
     updateSubscriptionUI();
     const btn1 = document.getElementById('btnSubscribe');
     const btn2 = document.getElementById('btnSubscribeInline');
+    const btn3 = document.getElementById('btnSubscribeFooter');
     const closeBtn = document.getElementById('closeAd');
+    const closeFooterBtn = document.getElementById('closeFooterAd');
     const subscribeHandler = () => {
         if (!isSubscribed()) {
             setSubscribed(true);
             updateSubscriptionUI();
             closeAdOverlay();
+            closeFooterAd();
             alert('Suscripción activada por 30 días. ¡Gracias por apoyar!');
         } else {
             alert('Ya estás suscrito.');
@@ -425,18 +471,62 @@ function initAds() {
     };
     if (btn1) btn1.addEventListener('click', subscribeHandler);
     if (btn2) btn2.addEventListener('click', subscribeHandler);
+    if (btn3) btn3.addEventListener('click', subscribeHandler);
     if (closeBtn) closeBtn.addEventListener('click', () => {
         closeAdOverlay();
     });
-    // Mostrar anuncio al cargar
+    if (closeFooterBtn) closeFooterBtn.addEventListener('click', () => {
+        closeFooterAd();
+    });
+    // Mostrar anuncios al cargar
     if (!isSubscribed()) {
         showAdOverlay();
-        // Programar anuncios periódicos cada 2 minutos (120000 ms)
+        showFooterAd();
+        // Programar anuncios periódicos
         setInterval(() => {
             showAdOverlay();
         }, 120000);
+        setInterval(() => {
+            showFooterAd();
+        }, 90000);
     }
 }
+/**
+ * Inicializa el inicio de sesión simulado con Google.
+ */
+function initLogin() {
+    const loginBtn = document.getElementById('googleLoginBtn');
+    const userInfo = document.getElementById('userInfo');
+    const emailSpan = document.getElementById('userEmail');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const updateLoginUI = () => {
+        const email = localStorage.getItem('xo_user_email') || '';
+        if (email) {
+            if (userInfo) userInfo.style.display = 'block';
+            if (emailSpan) emailSpan.textContent = email;
+            if (loginBtn) loginBtn.style.display = 'none';
+        } else {
+            if (userInfo) userInfo.style.display = 'none';
+            if (loginBtn) loginBtn.style.display = 'inline-block';
+        }
+    };
+    if (loginBtn) loginBtn.addEventListener('click', () => {
+        const email = prompt('Para iniciar sesión con Google, introduce tu correo electrónico:');
+        if (email && email.includes('@')) {
+            localStorage.setItem('xo_user_email', email);
+            updateLoginUI();
+            alert('Sesión iniciada como ' + email + '.');
+        }
+    });
+    if (logoutBtn) logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('xo_user_email');
+        updateLoginUI();
+    });
+    updateLoginUI();
+}
 
-// Inicializa los anuncios cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', initAds);
+// Inicializa los anuncios y el login cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    initAds();
+    initLogin();
+});

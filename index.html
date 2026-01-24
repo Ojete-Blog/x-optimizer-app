@@ -12,14 +12,15 @@
 <body>
     <div class="container">
         <h1>X Post Optimizer v11.0 for @GlobalEye_TV</h1>
-        <p>Actualizado: Análisis siempre procede (incluso sin texto manual, con fallback genérico). Mejoras: Flujo con Grok optimizado, sugerencias más específicas, chart mejorado, prompt auto‑generado si falta texto. Funciona perfectamente sin APIs.</p>
+        <p class="tagline">Optimiza y analiza tus posts de X para @GlobalEye_TV.</p>
 
-        <div class="highlight-message">
-            <strong>Mejor experiencia (2026):</strong><br />
-            1. Pega la URL del post<br />
-            2. Pulsa "Generar Prompt para Grok"<br />
-            3. Copia el texto<br />
-            4. Pégalo en este chat conmigo (Grok) – fetcharé el post real con x_thread_fetch y daré análisis completo.
+        <!-- Contenedor de inicio de sesión simulado con Google -->
+        <div id="loginContainer" class="login-container">
+            <button id="googleLoginBtn" class="google-login-button" type="button">Iniciar sesión con Google</button>
+            <div id="userInfo" class="user-info hidden">
+                Sesión iniciada como <span id="userEmail"></span>.
+                <button id="logoutBtn" type="button">Cerrar sesión</button>
+            </div>
         </div>
 
         <!-- Popup de publicidad (visible solo si no estás suscrito). Cubre toda la pantalla y se puede cerrar -->
@@ -62,6 +63,15 @@
         <button onclick="generateGrokPrompt()" class="grok-button prominent">Generar Prompt para Grok (Recomendado para precisión)</button>
         <div id="grokPromptContainer" style="display: none;"></div>
         <div id="results"></div>
+    </div>
+
+    <!-- Anuncio fijo en el pie de página (visible solo si no estás suscrito) -->
+    <div id="footerAd" class="footer-ad hidden" role="complementary" aria-label="Publicidad en pie de página">
+        <a id="footerAdLink" href="#" target="_blank" rel="noopener noreferrer">
+            <img id="footerAdImage" src="" alt="Publicidad" loading="lazy" />
+        </a>
+        <button id="closeFooterAd" class="footer-ad-close" type="button" aria-label="Cerrar anuncio">×</button>
+        <button id="btnSubscribeFooter" class="sub-button" type="button">Sin anuncios 1€</button>
     </div>
 
     <!-- Librería de widgets de X -->

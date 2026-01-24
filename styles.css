@@ -78,6 +78,87 @@ button:hover { opacity: 0.9; }
 .ad-close:hover {
   color: #aaa;
 }
+
+/* ────────────────────────────── Login y tagline ────────────────────────────── */
+.tagline {
+  color: #cccccc;
+  font-size: 1.1em;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.login-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.google-login-button {
+  background: #4285f4;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.google-login-button:hover {
+  opacity: 0.9;
+}
+
+.user-info {
+  color: #e0e0e0;
+}
+.user-info button {
+  background: #dc3545;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+.user-info button:hover {
+  opacity: 0.9;
+}
+
+/* ────────────────────────────── Anuncio de pie de página ────────────────────────────── */
+.footer-ad {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #111;
+  border-top: 1px solid #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 8px 16px;
+  z-index: 9999;
+}
+
+.footer-ad img {
+  height: 60px;
+  width: auto;
+  border-radius: 8px;
+}
+
+.footer-ad-close {
+  background: transparent;
+  border: none;
+  color: #eee;
+  font-size: 24px;
+  cursor: pointer;
+}
+.footer-ad-close:hover {
+  color: #aaa;
+}
 /* Botón para suscribirse y eliminar anuncios */
 .sub-button {
   background: #28a745;
