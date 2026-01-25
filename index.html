@@ -8,75 +8,83 @@
     <link rel="stylesheet" href="styles.css" />
     <!-- Gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Ads: Sustituye ca‑pub‑REPLACE con tu ID de AdSense para anuncios reales -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-REPLACE_WITH_YOUR_ADSENSE_CLIENT" crossorigin="anonymous"></script>
+    <!-- Google Identity Services para inicio de sesión -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+    <!-- Cabecera profesional -->
+    <header class="main-header">
+        <h1>X Post Optimizer v11.0</h1>
+        <p class="subtitle">Optimiza y analiza tus posts de X para @GlobalEye_TV</p>
+    </header>
+    <!-- Menú de pestañas -->
+    <nav class="tab-menu">
+        <button class="tab-button active" data-tab="analyze">Optimizar</button>
+        <button class="tab-button" data-tab="report">Informe</button>
+    </nav>
+    <!-- Contenedor principal -->
     <div class="container">
-        <h1>X Post Optimizer v11.0 for @GlobalEye_TV</h1>
-        <p class="tagline">Optimiza y analiza tus posts de X para @GlobalEye_TV.</p>
-
-        <!-- Contenedor de inicio de sesión simulado con Google -->
-        <div id="loginContainer" class="login-container">
-            <button id="googleLoginBtn" class="google-login-button" type="button">Iniciar sesión con Google</button>
-            <div id="userInfo" class="user-info hidden">
-                Sesión iniciada como <span id="userEmail"></span>.
-                <button id="logoutBtn" type="button">Cerrar sesión</button>
+        <!-- Pestaña: Optimizar -->
+        <div id="tab-analyze" class="tab-content">
+            <!-- Panel de inicio de sesión -->
+            <div class="panel">
+                <h3>Cuenta</h3>
+                <div id="googleLoginSection" class="login-container">
+                    <div id="googleSignInDiv"></div>
+                    <div id="userInfo" class="user-info">
+                        Sesión iniciada como <span id="userEmail"></span>.
+                        <button id="logoutBtn" type="button">Cerrar sesión</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Panel de URL y preview -->
+            <div class="panel">
+                <h3>Enlace del post</h3>
+                <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()" />
+                <div id="previewContainer" class="preview-box">
+                    <p id="previewStatus">Pega URL para preview/investigación, o usa manual abajo.</p>
+                    <div id="tweetEmbed"></div>
+                </div>
+            </div>
+            <!-- Panel de entrada manual -->
+            <div class="panel">
+                <h3>Entrada Manual</h3>
+                <textarea id="postInput" placeholder="Texto manual si no hay URL o parsing falla..."></textarea>
+                <textarea id="mediaInput" placeholder="Media manual (ej: 'Imagen de noticia', 'Video corto')..."></textarea>
+            </div>
+            <!-- Panel de API keys opcionales -->
+            <div class="panel api-keys">
+                <h3>API Keys (opcional)</h3>
+                <input type="text" id="newsApiKey" placeholder="NewsAPI.org Key" />
+                <input type="text" id="newsdataApiKey" placeholder="NewsData.io Key" />
+                <input type="text" id="sentimentApiKey" placeholder="Twinword Sentiment Key" />
+                <button type="button" onclick="saveApiKeys()">Guardar Keys</button>
+            </div>
+            <!-- Acciones -->
+            <div class="actions">
+                <button id="btnSubscribe" class="sub-button" type="button">Sin anuncios 1€</button>
+                <button type="button" onclick="autoAnalyze()" class="auto-button">Auto‑Analizar &amp; Optimizar</button>
+                <button type="button" onclick="generateGrokPrompt()" class="grok-button prominent">Generar Prompt para Grok</button>
             </div>
         </div>
-
-        <!-- Popup de publicidad (visible solo si no estás suscrito). Cubre toda la pantalla y se puede cerrar -->
-        <div id="adOverlay" class="ad-overlay" role="dialog" aria-label="Publicidad emergente">
-            <div class="ad-content">
-                <button id="closeAd" class="ad-close" type="button" aria-label="Cerrar anuncio">×</button>
-                <a id="adLink" href="#" target="_blank" rel="noopener noreferrer">
-                    <img id="adImage" src="" alt="Publicidad" loading="lazy" />
-                </a>
-                <!-- Botón inline dentro del popup para activar suscripción y ocultar anuncios -->
-                <button id="btnSubscribeInline" class="sub-button" type="button">Sin anuncios 1€</button>
-            </div>
+        <!-- Pestaña: Informe -->
+        <div id="tab-report" class="tab-content" style="display: none;">
+            <div id="grokPromptContainer" style="display: none;"></div>
+            <div id="results"></div>
         </div>
-
-        <!-- Campo para URL y preview -->
-        <input type="text" id="postUrl" placeholder="URL del post (https://x.com/user/status/123456)" class="url-input" oninput="loadPreview()" />
-        <div id="previewContainer" class="preview-box">
-            <p id="previewStatus">Pega URL para preview/investigación, o usa manual abajo.</p>
-            <div id="tweetEmbed"></div>
-        </div>
-
-        <!-- Inputs manuales -->
-        <textarea id="postInput" placeholder="Texto manual si no hay URL o parsing falla..."></textarea>
-        <textarea id="mediaInput" placeholder="Media manual (ej: 'Imagen de noticia', 'Video corto')..."></textarea>
-
-        <!-- API keys opcionales -->
-        <div class="api-keys">
-            <h3>API Keys (opcional para enriquecimiento)</h3>
-            <input type="text" id="newsApiKey" placeholder="NewsAPI.org Key" />
-            <input type="text" id="newsdataApiKey" placeholder="NewsData.io Key" />
-            <input type="text" id="sentimentApiKey" placeholder="Twinword Sentiment Key" />
-            <button onclick="saveApiKeys()">Guardar Keys</button>
-        </div>
-
-        <!-- Botón principal de suscripción (visible siempre, cambia de texto al suscribirse) -->
-        <button id="btnSubscribe" class="sub-button" type="button">Sin anuncios 1€</button>
-
-        <!-- Acciones -->
-        <button onclick="autoAnalyze()" class="auto-button">Auto‑Analizar &amp; Optimizar</button>
-        <button onclick="generateGrokPrompt()" class="grok-button prominent">Generar Prompt para Grok (Recomendado para precisión)</button>
-        <div id="grokPromptContainer" style="display: none;"></div>
-        <div id="results"></div>
     </div>
-
-    <!-- Anuncio fijo en el pie de página (visible solo si no estás suscrito) -->
+    <!-- Popup de publicidad (overlay) eliminado: solo se utiliza anuncio en pie de página para una experiencia sin interrupciones -->
+    <!-- Anuncio en pie de página -->
     <div id="footerAd" class="footer-ad hidden" role="complementary" aria-label="Publicidad en pie de página">
-        <a id="footerAdLink" href="#" target="_blank" rel="noopener noreferrer">
-            <img id="footerAdImage" src="" alt="Publicidad" loading="lazy" />
-        </a>
-        <button id="closeFooterAd" class="footer-ad-close" type="button" aria-label="Cerrar anuncio">×</button>
+        <button id="closeFooterAd" class="footer-ad-close" type="button" aria-label="Cerrar anuncio" onclick="document.getElementById('footerAd').classList.add('hidden')">×</button>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-REPLACE_WITH_YOUR_ADSENSE_CLIENT" data-ad-slot="REPLACE_WITH_FOOTER_AD_SLOT_ID" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <button id="btnSubscribeFooter" class="sub-button" type="button">Sin anuncios 1€</button>
     </div>
-
     <!-- Librería de widgets de X -->
     <script async src="https://platform.x.com/widgets.js" charset="utf-8" id="x-widgets"></script>
     <!-- Lógica principal -->
-    <script src="app.js"></script>
+    <script src="main.js?v=20260124a"></script>
 </body>
 </html>

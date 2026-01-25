@@ -1,27 +1,52 @@
-# X Optimizer App con Anuncios
+# X Optimizer App – Versión final
 
-Esta es una versión final y pulida del repositorio **x-optimizer-app**. Además de mantener el flujo de análisis y optimización de posts de X (antes Twitter) para @GlobalEye_TV, incorpora anuncios no intrusivos y un inicio de sesión simulado con Google, todo sin necesidad de claves API.
+Esta versión pulida de **x-optimizer-app** te permite optimizar y analizar publicaciones de X (Twitter) para **@GlobalEye_TV** con una experiencia de usuario de aspecto profesional. Se incorporan paneles de navegación, un encabezado moderno, autenticación real con Google, anuncios de Google AdSense y un sistema de suscripción que elimina la publicidad durante un mes.
 
-## Características principales
+## Novedades destacadas
 
-* **Anuncios sin claves**: La aplicación muestra un popup de pantalla completa y un banner fijo en el pie de página con imágenes aleatorias obtenidas de [Picsum Photos](https://picsum.photos). Este servicio genera imágenes de alta calidad de forma gratuita y sin necesidad de registro ni claves API【993678427988795†L123-L125】【993678427988795†L177-L183】.
-* **Suscripción opcional**: Si el usuario prefiere una experiencia sin anuncios, puede activar la opción "Sin anuncios" por 1 € al mes. La suscripción se simula guardando la fecha de expiración en `localStorage`; durante 30 días no se volverán a mostrar ni popups ni anuncios en el pie de página.
-* **Inicio de sesión con Google (simulado)**: Se incluye un botón de "Iniciar sesión con Google" que permite al usuario introducir su correo electrónico y guardar su sesión localmente. Esta funcionalidad no requiere claves ni llamadas externas y se almacena en `localStorage`.
-* **Compatibilidad total**: El resto de la aplicación funciona igual que antes, incluyendo la detección de posts vía URL, el análisis automático/manual y la generación de prompts para Grok.
+### Interfaz renovada
 
-## Estructura del proyecto
+* **Cabecera y navegación**: un encabezado con diseño limpio y un menú de pestañas permiten alternar fácilmente entre la sección de optimización y la de informe.
+* **Presentación del post optimizada**: el campo de URL renderiza la publicación de X mediante el widget oficial; las áreas de texto permiten análisis manual, y los resultados se muestran en una pestaña dedicada con tablas y gráficas.
 
-- `index.html` – Estructura de la interfaz. Incluye el popup de anuncios, el anuncio fijo en el pie de página, el contenedor de login y botones para suscribirse.
-- `styles.css` – Estilos generales y estilos específicos para el popup de publicidad, el banner de pie de página, el inicio de sesión y los botones de suscripción.
-- `app.js` – Lógica principal. Maneja el estado de suscripción (con caducidad), la carga y control de ambos anuncios, la lógica del login simulado y el refresco periódico.
-- `.gitattributes` – Configuración de Git.
+### Inicio de sesión con Google
+
+La app utiliza [Google Identity Services](https://developers.google.com/identity/gsi/web?hl=es) para ofrecer un botón de “Iniciar sesión con Google”. Cuando el usuario inicia sesión, su correo electrónico se almacena en `localStorage` y se muestra en la interfaz. Para que funcione correctamente debes reemplazar `REEMPLAZA_CON_TU_CLIENT_ID_DE_GOOGLE` en `main.js` por el *Client ID* de tu proyecto de Google Cloud.
+
+### Anuncios reales con Google AdSense
+
+La app incluye un bloque de Google AdSense fijado en el pie de página. Para que se muestre correctamente debes:
+
+1. Tener una cuenta de Google AdSense y obtener tu identificador de editor (`ca‑pub‑xxxxxxxxxxxxxxx`).
+2. Reemplazar `REPLACE_WITH_YOUR_ADSENSE_CLIENT` en `index.html` por tu identificador de AdSense.
+3. Crear una unidad de anuncio en tu panel de AdSense y copiar su *ad slot ID*. Sustituye `REPLACE_WITH_FOOTER_AD_SLOT_ID` en `index.html` por el código de ese bloque.
+
+Si no configuras AdSense, la estructura del bloque seguirá presente pero el anuncio no se cargará. Puedes sustituirlo por contenido propio o mantener el sistema sin publicidad.
+
+### Sistema de suscripción
+
+Los usuarios pueden suscribirse por 1 € al mes para ocultar el anuncio de pie de página. La app almacena la fecha de expiración en `localStorage` y, mientras esté vigente, no se volverán a mostrar anuncios. Este sistema se gestiona completamente en el cliente y no requiere claves ni procesamiento en el servidor.
+
+### Enriquecimiento opcional
+
+Si deseas un análisis más profundo, puedes proporcionar tus claves para **NewsAPI.org**, **NewsData.io** y **Twinword Sentiment** en la sección de API keys. La aplicación continuará funcionando sin estas claves, generando un informe básico.
+
+## Archivos del proyecto
+
+* `index.html` – Estructura de la interfaz de usuario, bloques de anuncios y contenedores de pestañas. Incluye las etiquetas `<ins>` de AdSense y la carga del botón de Google.
+* `styles.css` – Estilos globales para la cabecera, menú de pestañas, formularios, tablas de resultados y componentes publicitarios.
+* `main.js` – Lógica de la aplicación: gestión de pestañas, análisis de posts, generación de informes y prompts, inicio de sesión con Google, anuncios AdSense y control de suscripciones.
+* `.gitattributes` – Configuración de Git.
 
 ## Uso
 
-1. Abre `index.html` en tu navegador para ejecutar la app de optimización.
-2. Al abrir la aplicación aparecerá un popup con publicidad. Si prefieres la versión sin anuncios, pulsa en el botón "Sin anuncios 1 €" (en el popup o en el botón principal). La suscripción se guardará localmente con una duración de 30 días y ocultará completamente los anuncios durante ese tiempo.
-3. Copia la URL del post que quieras analizar o introduce texto/manual en los campos correspondientes. La app generará un análisis detallado y sugerencias de optimización.
+1. Descomprime el proyecto y abre `index.html` en tu navegador favorito.
+2. Configura tu Client ID de Google y tus identificadores de AdSense, si dispones de ellos, modificando `main.js` e `index.html` tal como se explica en las secciones anteriores.
+3. En la pestaña **Optimizar**, pega la URL de un post de X o introduce texto y media manualmente. Pulsa **Auto‑Analizar & Optimizar** para generar un informe detallado. Puedes alternar a la pestaña **Informe** para ver el resultado y el gráfico.
+4. Para utilizar las APIs opcionales, introduce tus claves en los campos correspondientes y pulsa **Guardar Keys**. Para obtener un prompt extendido compatible con Grok, usa **Generar Prompt para Grok**.
+5. Al cargar la página se mostrará un anuncio en el pie de página. Si prefieres eliminarlo, haz clic en cualquier botón “Sin anuncios 1 €”; la suscripción se almacenará durante 30 días en tu navegador.
 
-## Nota sobre las APIs
+## Consideraciones
 
-El enriquecimiento opcional con NewsAPI.org, NewsData.io o Twinword Sentiment sigue disponible si introduces tus propias claves API en los campos indicados. Estas claves no son obligatorias para el funcionamiento básico ni para el sistema de anuncios.
+* Esta aplicación está concebida como una herramienta de ejemplo que funciona íntegramente en el cliente. El manejo de anuncios y suscripciones es local y no implica transacciones reales.
+* Para mostrar anuncios reales, debes cumplir con las políticas de Google AdSense y proporcionar tus propios códigos. Si prefieres no usar AdSense, puedes sustituir los bloques `<ins class="adsbygoogle">` por tus propios contenidos o imágenes.
