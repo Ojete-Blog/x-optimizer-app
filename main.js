@@ -1,8 +1,10 @@
-// main.js — Versión final del optimizador de posts X con UI profesional,
-// inicio de sesión con Google, anuncios de Google AdSense y sistema de
-// suscripción. Se mantuvieron todas las funciones de análisis y generación
-// de informes, además de añadir nuevas funcionalidades para una
-// experiencia de usuario más completa.
+// main.js — Adaptación de X Optimizer App para el ecosistema Clawdbot
+//
+// Esta versión conserva la lógica original de análisis y generación de informes,
+// pero modifica los textos relacionados con el prompt para orientarlo a un
+// agente de Clawdbot. El resto de la aplicación se mantiene intacto y no
+// depende de servicios de pago: las llamadas a NewsAPI.org, NewsData.io y
+// Twinword Sentiment son totalmente opcionales.
 
 /* =============================================================== */
 /* ======================= VARS GLOBALES ========================= */
@@ -121,7 +123,7 @@ async function enrichWithPublicApis(text) {
     let enrichment = '';
     const hasKeys = apiKeys.newsapi || apiKeys.sentiment || apiKeys.newsdata;
     if (!hasKeys) {
-        return '<p>Análisis básico sin APIs (opcionalmente puedes añadir claves para más detalles). Para más precisión, usa el Prompt para Grok.</p>';
+        return '<p>Análisis básico sin APIs (puedes añadir claves opcionalmente). Para un análisis más profundo, copia el prompt generado y utilízalo con tu agente de Clawdbot.</p>';
     }
     // NewsAPI.org
     if (apiKeys.newsapi && text.length > 20) {
@@ -194,8 +196,8 @@ async function autoAnalyze() {
     let fetchedText = textInput;
     let fetchedMedia = mediaInput;
     if (mode === 'link' && !fetchedText && !fetchedMedia) {
-        previewStatus.textContent = 'Modo link: No hay texto/media manual. Generando análisis genérico y sugiriendo análisis preciso con Grok.';
-        fetchedText = 'Post de @GlobalEye_TV sobre noticias globales (supuesto basado en URL). Para precisión, usa Prompt para Grok.';
+        previewStatus.textContent = 'Modo link: No hay texto/media manual. Generando análisis genérico y sugiriendo análisis preciso vía Clawdbot.';
+        fetchedText = 'Post de @GlobalEye_TV sobre noticias globales (supuesto basado en URL). Para precisión, copia el prompt para Clawdbot.';
         generateGrokPrompt();
     } else if (!fetchedText && !fetchedMedia && !urlInput) {
         previewStatus.textContent = 'No hay contenido suficiente. Pega URL, texto o media.';
@@ -313,19 +315,19 @@ function generateReport(text, media, mode, enrichmentHtml) {
 }
 
 /**
- * Genera el prompt para Grok basado en la entrada del usuario.
+ * Genera el prompt para Clawdbot basado en la entrada del usuario.
  */
 function generateGrokPrompt() {
     const url   = document.getElementById('postUrl').value.trim();
     const text  = document.getElementById('postInput').value.trim() || '[pega texto del post si lo tienes]';
     const media = document.getElementById('mediaInput').value.trim() || '[describe media si aplica]';
     const mode  = url ? 'link' : 'manual';
-    const prompt = `Como Grok, analiza este post de @GlobalEye_TV con ${mode === 'link' ? 'URL "' + url + '" (ID ' + (postId || 'N/A') + ')' : 'texto manual'}.` +
+    const prompt = `Como tu agente de Clawdbot, analiza este post de @GlobalEye_TV con ${mode === 'link' ? 'URL "' + url + '" (ID ' + (postId || 'N/A') + ')' : 'texto manual'}.` +
                    `\nUsa x_thread_fetch con post_id ${postId || 'N/A'} para fetch contenido preciso. Texto: "${text}". Media: "${media}".` +
                    `\nDa informe detallado extenso: Score (weighted scorer), explicaciones paso a paso (P(reply)/dwell/video_view/negatives), mejoras específicas para replies/threads/videos/hashtags/enlaces, evitando negatives.` +
-                   `\nGenera versión optimizada. Sé exhaustivo con Premium, considera algorithm de X para optimizaciones avanzadas (For You reach). Usa tablas si ayuda.`;
+                   `\nGenera versión optimizada. Sé exhaustivo y considera el algoritmo de X para optimizaciones avanzadas (For You reach). Usa tablas si ayuda.`;
     const container = document.getElementById('grokPromptContainer');
-    container.innerHTML = `<h3>Prompt para Grok (copia y pega en chat Grok):</h3><pre>${prompt}</pre><button onclick="copyPrompt()">Copiar Prompt</button><p>Modo detectado: ${mode}. Para análisis preciso, pega este prompt en el chat conmigo (Grok) – usaré tools internas.</p>`;
+    container.innerHTML = `<h3>Prompt para Clawdbot (copia y pega en el chat):</h3><pre>${prompt}</pre><button onclick="copyPrompt()">Copiar Prompt</button><p>Modo detectado: ${mode}. Para análisis avanzado, pega este prompt en el chat con tu agente de Clawdbot.</p>`;
     container.style.display = 'block';
 }
 
@@ -334,7 +336,7 @@ function generateGrokPrompt() {
  */
 function copyPrompt() {
     const pre = document.querySelector('#grokPromptContainer pre');
-    navigator.clipboard.writeText(pre.textContent).then(() => alert('Prompt copiado! Pégalo en el chat con Grok para análisis real.')).catch(err => alert('Error: ' + err));
+    navigator.clipboard.writeText(pre.textContent).then(() => alert('Prompt copiado. Pégalo en el chat de Clawdbot para análisis real.')).catch(err => alert('Error: ' + err));
 }
 
 /* =============================================================== */
@@ -403,13 +405,6 @@ function updateSubscriptionUI() {
 }
 
 /**
- * Muestra el popup de publicidad y fuerza el refresco del anuncio de Google. Solo si no hay suscripción.
- */
-//
-// Eliminado: showAdOverlay y closeAdOverlay ya no se utilizan al eliminar el popup de publicidad.
-//
-
-/**
  * Muestra el anuncio de pie de página y refresca su contenido.
  */
 function showFooterAd() {
@@ -461,21 +456,6 @@ function initAds() {
     if (!isSubscribed()) {
         showFooterAd();
         setInterval(showFooterAd, 90000); // refrescar cada 1.5 minutos
-    }
-}
-
-/**
- * Maneja la suscripción inline desde el popup. Se usa como onclick en HTML.
- */
-function subscribeInline() {
-    if (!isSubscribed()) {
-        setSubscribed(true);
-        updateSubscriptionUI();
-        // Oculta anuncio de pie de página
-        closeFooterAd();
-        alert('Suscripción activada por 30 días. ¡Gracias por apoyar!');
-    } else {
-        alert('Ya estás suscrito.');
     }
 }
 

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Optimizer App v11.0 - Grow Your @GlobalEye_TV</title>
+    <title>X Optimizer App v11.0 - Adaptado para Clawdbot</title>
     <!-- Hoja de estilos -->
     <link rel="stylesheet" href="styles.css" />
     <!-- Gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Google Ads: Sustituye ca‑pub‑REPLACE con tu ID de AdSense para anuncios reales -->
+    <!-- Google Ads: opcional, sustituye ca‑pub-REPLACE con tu ID de AdSense si quieres anuncios reales -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-REPLACE_WITH_YOUR_ADSENSE_CLIENT" crossorigin="anonymous"></script>
-    <!-- Google Identity Services para inicio de sesión -->
+    <!-- Google Identity Services para inicio de sesión opcional -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -66,7 +66,7 @@
             <div class="actions">
                 <button id="btnSubscribe" class="sub-button" type="button">Sin anuncios 1€</button>
                 <button type="button" onclick="autoAnalyze()" class="auto-button">Auto‑Analizar &amp; Optimizar</button>
-                <button type="button" onclick="generateGrokPrompt()" class="grok-button prominent">Generar Prompt para Grok</button>
+                <button type="button" onclick="generateGrokPrompt()" class="grok-button prominent">Generar Prompt</button>
             </div>
         </div>
         <!-- Pestaña: Informe -->
@@ -75,8 +75,7 @@
             <div id="results"></div>
         </div>
     </div>
-    <!-- Popup de publicidad (overlay) eliminado: solo se utiliza anuncio en pie de página para una experiencia sin interrupciones -->
-    <!-- Anuncio en pie de página -->
+    <!-- Anuncio en pie de página (opcional) -->
     <div id="footerAd" class="footer-ad hidden" role="complementary" aria-label="Publicidad en pie de página">
         <button id="closeFooterAd" class="footer-ad-close" type="button" aria-label="Cerrar anuncio" onclick="document.getElementById('footerAd').classList.add('hidden')">×</button>
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-REPLACE_WITH_YOUR_ADSENSE_CLIENT" data-ad-slot="REPLACE_WITH_FOOTER_AD_SLOT_ID" data-ad-format="auto" data-full-width-responsive="true"></ins>

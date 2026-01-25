@@ -1,52 +1,35 @@
-# X Optimizer App – Versión final
+# X Optimizer App – Adaptado para Clawdbot (versión 2026)
 
-Esta versión pulida de **x-optimizer-app** te permite optimizar y analizar publicaciones de X (Twitter) para **@GlobalEye_TV** con una experiencia de usuario de aspecto profesional. Se incorporan paneles de navegación, un encabezado moderno, autenticación real con Google, anuncios de Google AdSense y un sistema de suscripción que elimina la publicidad durante un mes.
+Esta versión actualizada de **x‑optimizer‑app** ha sido adaptada para funcionar dentro del ecosistema de **Clawdbot**. La aplicación se ejecuta por completo en el cliente y no depende de servicios de pago: puede analizar y optimizar publicaciones de X (Twitter) sin necesidad de claves API de terceros.  
+Los paneles de navegación, el sistema de pestañas y el informe siguen conservando el aspecto profesional, pero se han simplificado las opciones para centrarse en un análisis básico y en la generación de un _prompt_ para solicitar un análisis avanzado al agente de Clawdbot.
 
-## Novedades destacadas
+## Novedades y cambios
 
-### Interfaz renovada
-
-* **Cabecera y navegación**: un encabezado con diseño limpio y un menú de pestañas permiten alternar fácilmente entre la sección de optimización y la de informe.
-* **Presentación del post optimizada**: el campo de URL renderiza la publicación de X mediante el widget oficial; las áreas de texto permiten análisis manual, y los resultados se muestran en una pestaña dedicada con tablas y gráficas.
-
-### Inicio de sesión con Google
-
-La app utiliza [Google Identity Services](https://developers.google.com/identity/gsi/web?hl=es) para ofrecer un botón de “Iniciar sesión con Google”. Cuando el usuario inicia sesión, su correo electrónico se almacena en `localStorage` y se muestra en la interfaz. Para que funcione correctamente debes reemplazar `REEMPLAZA_CON_TU_CLIENT_ID_DE_GOOGLE` en `main.js` por el *Client ID* de tu proyecto de Google Cloud.
-
-### Anuncios reales con Google AdSense
-
-La app incluye un bloque de Google AdSense fijado en el pie de página. Para que se muestre correctamente debes:
-
-1. Tener una cuenta de Google AdSense y obtener tu identificador de editor (`ca‑pub‑xxxxxxxxxxxxxxx`).
-2. Reemplazar `REPLACE_WITH_YOUR_ADSENSE_CLIENT` en `index.html` por tu identificador de AdSense.
-3. Crear una unidad de anuncio en tu panel de AdSense y copiar su *ad slot ID*. Sustituye `REPLACE_WITH_FOOTER_AD_SLOT_ID` en `index.html` por el código de ese bloque.
-
-Si no configuras AdSense, la estructura del bloque seguirá presente pero el anuncio no se cargará. Puedes sustituirlo por contenido propio o mantener el sistema sin publicidad.
-
-### Sistema de suscripción
-
-Los usuarios pueden suscribirse por 1 € al mes para ocultar el anuncio de pie de página. La app almacena la fecha de expiración en `localStorage` y, mientras esté vigente, no se volverán a mostrar anuncios. Este sistema se gestiona completamente en el cliente y no requiere claves ni procesamiento en el servidor.
-
-### Enriquecimiento opcional
-
-Si deseas un análisis más profundo, puedes proporcionar tus claves para **NewsAPI.org**, **NewsData.io** y **Twinword Sentiment** en la sección de API keys. La aplicación continuará funcionando sin estas claves, generando un informe básico.
+* **Integración con Clawdbot**: esta versión está pensada para ejecutarse como recurso estático en el servidor **canvas** de Clawdbot. Basta con copiar la carpeta del proyecto al directorio de _canvas_ y acceder a `index.html` desde el dashboard de Clawdbot. No requiere back‑end ni API externas.
+* **Claves API opcionales desactivadas**: aunque la aplicación mantiene el soporte para introducir claves de **NewsAPI.org**, **NewsData.io** y **Twinword Sentiment** para obtener noticias y análisis de sentimiento, su uso es totalmente opcional. Si no introduces ninguna clave, el análisis se basa en heurísticas internas, por lo que no hay dependencias de servicios de pago.
+* **Sistema de anuncios y suscripción**: el bloque de Google AdSense y el sistema de suscripción se conservan como en la versión original. Puedes sustituirlos por tu propio contenido o mantenerlos ocultos si no deseas usarlos.
+* **Generación de prompt para Clawdbot**: el botón **Generar Prompt** crea un texto que puede pegarse en una conversación con tu agente de Clawdbot para obtener un informe detallado. Este prompt describe el post y su media, proporcionando al agente toda la información necesaria para realizar un análisis avanzado.
 
 ## Archivos del proyecto
 
-* `index.html` – Estructura de la interfaz de usuario, bloques de anuncios y contenedores de pestañas. Incluye las etiquetas `<ins>` de AdSense y la carga del botón de Google.
-* `styles.css` – Estilos globales para la cabecera, menú de pestañas, formularios, tablas de resultados y componentes publicitarios.
-* `main.js` – Lógica de la aplicación: gestión de pestañas, análisis de posts, generación de informes y prompts, inicio de sesión con Google, anuncios AdSense y control de suscripciones.
-* `.gitattributes` – Configuración de Git.
+| Archivo           | Descripción                                                                           |
+|-------------------|---------------------------------------------------------------------------------------|
+| `index.html`      | Estructura de la interfaz de usuario. Incluye la cabecera, menú de pestañas, paneles y contenedores. |
+| `styles.css`      | Hoja de estilos con un tema oscuro profesional y elementos responsive.                 |
+| `main.js`         | Lógica principal: gestión de pestañas, análisis heurístico, generación de informes y prompts, control de login, anuncios y suscripciones. |
+| `.gitattributes`  | Configuración de Git para normalizar los finales de línea.                             |
 
-## Uso
+## Uso con Clawdbot
 
-1. Descomprime el proyecto y abre `index.html` en tu navegador favorito.
-2. Configura tu Client ID de Google y tus identificadores de AdSense, si dispones de ellos, modificando `main.js` e `index.html` tal como se explica en las secciones anteriores.
-3. En la pestaña **Optimizar**, pega la URL de un post de X o introduce texto y media manualmente. Pulsa **Auto‑Analizar & Optimizar** para generar un informe detallado. Puedes alternar a la pestaña **Informe** para ver el resultado y el gráfico.
-4. Para utilizar las APIs opcionales, introduce tus claves en los campos correspondientes y pulsa **Guardar Keys**. Para obtener un prompt extendido compatible con Grok, usa **Generar Prompt para Grok**.
-5. Al cargar la página se mostrará un anuncio en el pie de página. Si prefieres eliminarlo, haz clic en cualquier botón “Sin anuncios 1 €”; la suscripción se almacenará durante 30 días en tu navegador.
+1. **Instala Clawdbot** en tu máquina siguiendo la guía de instalación. Asegúrate de que el **canvas host** esté funcionando (por defecto en `http://localhost:18793/__clawdbot__/canvas/`).
+2. Copia la carpeta `x-optimizer-app-clawdbot` en la ruta donde Clawdbot sirve el canvas o publícala a través de cualquier servidor estático accesible desde tu navegador.
+3. Accede a `index.html` desde el dashboard de Clawdbot o directamente en tu navegador. La aplicación se ejecutará localmente.
+4. Pega la URL de un post de X o introduce texto y descripción de media manualmente en la pestaña **Optimizar**. Pulsa **Auto‑Analizar & Optimizar** para generar el informe básico.
+5. Para obtener un análisis detallado, pulsa **Generar Prompt**. Copia el texto generado y pégalo en el chat con tu agente de Clawdbot. El agente utilizará el prompt para producir un informe exhaustivo.
 
 ## Consideraciones
 
-* Esta aplicación está concebida como una herramienta de ejemplo que funciona íntegramente en el cliente. El manejo de anuncios y suscripciones es local y no implica transacciones reales.
-* Para mostrar anuncios reales, debes cumplir con las políticas de Google AdSense y proporcionar tus propios códigos. Si prefieres no usar AdSense, puedes sustituir los bloques `<ins class="adsbygoogle">` por tus propios contenidos o imágenes.
+* La aplicación está diseñada para funcionar **sin dependencias de pago**. Las llamadas a NewsAPI.org, NewsData.io y Twinword Sentiment están desactivadas a menos que proporciones tus propias claves.  
+* Google AdSense y el inicio de sesión con Google son componentes gratuitos opcionales. Si no deseas usarlos, puedes eliminar sus scripts de `index.html` o reemplazarlos por tus propios fragmentos.
+* La optimización se basa en reglas heurísticas internas que puntúan aspectos como invitaciones a respuestas, tiempo de lectura (dwell time), presencia de vídeos, uso de hashtags y enlaces, y la probabilidad de comentarios negativos.
+* El sistema de suscripción almacena la fecha de expiración en `localStorage`. No se realiza ninguna transacción real.
