@@ -1,35 +1,41 @@
-# X Optimizer App – Adaptado para Clawdbot (versión 2026)
+# X Optimizer – Plugin para Clawdbot
 
-Esta versión actualizada de **x‑optimizer‑app** ha sido adaptada para funcionar dentro del ecosistema de **Clawdbot**. La aplicación se ejecuta por completo en el cliente y no depende de servicios de pago: puede analizar y optimizar publicaciones de X (Twitter) sin necesidad de claves API de terceros.  
-Los paneles de navegación, el sistema de pestañas y el informe siguen conservando el aspecto profesional, pero se han simplificado las opciones para centrarse en un análisis básico y en la generación de un _prompt_ para solicitar un análisis avanzado al agente de Clawdbot.
+Esta carpeta contiene una implementación completa del **X Optimizer** como una **herramienta de Clawdbot**.  
+El objetivo de este plugin es llevar la lógica heurística de la aplicación *x‑optimizer‑app* dentro del sistema de Clawdbot para que pueda ejecutarse directamente desde una conversación o desde el panel de herramientas del agente, sin depender de servicios externos de pago.  
 
-## Novedades y cambios
+El plugin expone una función que acepta como entrada el texto de un post de X (Twitter) junto con algunos indicadores opcionales (si incluye vídeo, si contiene enlaces externos y los hashtags utilizados) y devuelve un análisis estructurado y un conjunto de sugerencias para optimizarlo.  
+Además genera un *prompt* en español que se puede utilizar para solicitar un análisis más profundo al agente de Clawdbot.  
 
-* **Integración con Clawdbot**: esta versión está pensada para ejecutarse como recurso estático en el servidor **canvas** de Clawdbot. Basta con copiar la carpeta del proyecto al directorio de _canvas_ y acceder a `index.html` desde el dashboard de Clawdbot. No requiere back‑end ni API externas.
-* **Claves API opcionales desactivadas**: aunque la aplicación mantiene el soporte para introducir claves de **NewsAPI.org**, **NewsData.io** y **Twinword Sentiment** para obtener noticias y análisis de sentimiento, su uso es totalmente opcional. Si no introduces ninguna clave, el análisis se basa en heurísticas internas, por lo que no hay dependencias de servicios de pago.
-* **Sistema de anuncios y suscripción**: el bloque de Google AdSense y el sistema de suscripción se conservan como en la versión original. Puedes sustituirlos por tu propio contenido o mantenerlos ocultos si no deseas usarlos.
-* **Generación de prompt para Clawdbot**: el botón **Generar Prompt** crea un texto que puede pegarse en una conversación con tu agente de Clawdbot para obtener un informe detallado. Este prompt describe el post y su media, proporcionando al agente toda la información necesaria para realizar un análisis avanzado.
+## Contenido del repositorio
 
-## Archivos del proyecto
+| Archivo/Directorio                 | Descripción                                                                                                           |
+|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `tool.json`                       | Metadatos y esquemas de entrada/salida del plugin. Define el identificador, nombre, descripción e interfaz.           |
+| `index.js`                        | Implementación de la función principal que analiza el post y genera el resumen, sugerencias y prompt.                |
+| `package.json`                    | Declaración mínima de paquete npm para permitir instalación y resolución de dependencias, si fuera necesario.        |
+| `ui/`                             | Versión simplificada de la interfaz gráfica de *x‑optimizer‑app*, adaptada para ejecutarse en el `canvas` de Clawdbot. |
+| `ui/index.html`                   | Estructura HTML del panel.                                                                                            |
+| `ui/main.js`                      | Lógica de la interfaz web: gestiona formularios, llama al plugin local y muestra el resultado.                        |
+| `ui/styles.css`                   | Estilos para una apariencia moderna en modo oscuro.                                                                   |
 
-| Archivo           | Descripción                                                                           |
-|-------------------|---------------------------------------------------------------------------------------|
-| `index.html`      | Estructura de la interfaz de usuario. Incluye la cabecera, menú de pestañas, paneles y contenedores. |
-| `styles.css`      | Hoja de estilos con un tema oscuro profesional y elementos responsive.                 |
-| `main.js`         | Lógica principal: gestión de pestañas, análisis heurístico, generación de informes y prompts, control de login, anuncios y suscripciones. |
-| `.gitattributes`  | Configuración de Git para normalizar los finales de línea.                             |
+## Instalación en Clawdbot
 
-## Uso con Clawdbot
+1. Asegúrate de tener Clawdbot instalado y configurado en tu máquina. Consulta la documentación oficial para instalar el gateway y habilitar el *canvas*.
+2. Copia toda la carpeta `x-optimizer-clawdbot-plugin` dentro de la ruta `tools/` o `skills/` de tu instalación de Clawdbot (la ruta exacta puede variar según tu configuración; en instalaciones estándar suele ser `~/.clawdbot/tools/`).
+3. Reinicia el gateway de Clawdbot o recarga las herramientas desde el panel de control. El plugin debería aparecer bajo el nombre **X Optimizer**.
+4. Para usarlo desde una conversación, puedes invocar el comando de herramienta indicado o abrir la interfaz gráfica desde el *canvas* (`http://localhost:18793/__clawdbot__/canvas/x-optimizer-clawdbot-plugin/ui/index.html`).
+5. Si utilizas la interfaz gráfica, rellena los campos del post y pulsa **Analizar** para obtener el informe. El botón **Generar Prompt** preparará un texto que puedes copiar y pegar en el chat con tu agente de Clawdbot.
 
-1. **Instala Clawdbot** en tu máquina siguiendo la guía de instalación. Asegúrate de que el **canvas host** esté funcionando (por defecto en `http://localhost:18793/__clawdbot__/canvas/`).
-2. Copia la carpeta `x-optimizer-app-clawdbot` en la ruta donde Clawdbot sirve el canvas o publícala a través de cualquier servidor estático accesible desde tu navegador.
-3. Accede a `index.html` desde el dashboard de Clawdbot o directamente en tu navegador. La aplicación se ejecutará localmente.
-4. Pega la URL de un post de X o introduce texto y descripción de media manualmente en la pestaña **Optimizar**. Pulsa **Auto‑Analizar & Optimizar** para generar el informe básico.
-5. Para obtener un análisis detallado, pulsa **Generar Prompt**. Copia el texto generado y pégalo en el chat con tu agente de Clawdbot. El agente utilizará el prompt para producir un informe exhaustivo.
+## Funcionamiento del análisis heurístico
 
-## Consideraciones
+El algoritmo implementado en `index.js` aplica reglas simples para evaluar la probabilidad de recibir respuestas (invitación al diálogo), el tiempo de lectura (prolongación de la atención), la presencia de multimedia y enlaces, y el uso de hashtags.  
+Con ello calcula puntuaciones relativas y genera sugerencias concretas para mejorar el alcance del post. También aplica un análisis básico de sentimiento comprobando palabras negativas y positivas.  
+Estas reglas son orientativas y no sustituyen un estudio exhaustivo de la plataforma de X, pero ofrecen una primera guía sin coste alguno ni dependencias de APIs externas.
 
-* La aplicación está diseñada para funcionar **sin dependencias de pago**. Las llamadas a NewsAPI.org, NewsData.io y Twinword Sentiment están desactivadas a menos que proporciones tus propias claves.  
-* Google AdSense y el inicio de sesión con Google son componentes gratuitos opcionales. Si no deseas usarlos, puedes eliminar sus scripts de `index.html` o reemplazarlos por tus propios fragmentos.
-* La optimización se basa en reglas heurísticas internas que puntúan aspectos como invitaciones a respuestas, tiempo de lectura (dwell time), presencia de vídeos, uso de hashtags y enlaces, y la probabilidad de comentarios negativos.
-* El sistema de suscripción almacena la fecha de expiración en `localStorage`. No se realiza ninguna transacción real.
+## Dependencias opcionales
+
+El plugin no depende de APIs de pago. Los campos para NewsAPI.org, NewsData.io o Twinword Sentiment permanecen en el código de la interfaz (`ui/main.js`), pero están desactivados por defecto. Si deseas habilitarlos con tus propias claves (gratuitas u obtenidas por tu cuenta), puedes introducirlas en la interfaz web. Las peticiones se realizarán directamente desde el navegador y no desde Clawdbot, por lo que no se requiere modificar el backend.
+
+## Licencia
+
+Este código se distribuye sin garantía alguna. Puedes modificarlo y adaptarlo a tus necesidades siempre que respetes las licencias de los proyectos de origen. Aunque el plugin está inspirado en el repositorio original [x-optimizer-app](https://github.com/Ojete-Blog/x-optimizer-app), esta implementación es una adaptación independiente orientada a Clawdbot.

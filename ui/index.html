@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>X Optimizer (Clawdbot)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>X Optimizer</h1>
+      <p>Analiza y optimiza tus posts de X (Twitter) sin depender de servicios de pago.</p>
+      <form id="optimizer-form">
+        <label for="postText">Texto del post:</label>
+        <textarea id="postText" rows="4" placeholder="Escribe aquí el contenido del post…"></textarea>
+        <label for="hashtags">Hashtags (separados por comas):</label>
+        <input type="text" id="hashtags" placeholder="ej. tech, IA, marketing" />
+        <div class="options">
+          <label><input type="checkbox" id="hasVideo" /> Contiene vídeo</label>
+          <label><input type="checkbox" id="linkPresent" /> Contiene enlace</label>
+        </div>
+        <div class="buttons">
+          <button type="button" id="analyzeBtn">Analizar</button>
+          <button type="button" id="promptBtn" disabled>Generar Prompt</button>
+        </div>
+      </form>
+      <div id="results" class="results hidden">
+        <h2>Resultados</h2>
+        <pre id="analysis"></pre>
+        <h3>Sugerencias</h3>
+        <p id="suggestions"></p>
+        <h3>Prompt para Clawdbot</h3>
+        <textarea id="prompt" rows="4" readonly></textarea>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>

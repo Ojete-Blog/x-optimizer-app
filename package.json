@@ -1,0 +1,7 @@
+{
+  "name": "clawdbot-x-optimizer",
+  "version": "1.0.0",
+  "description": "X Optimizer tool for Clawdbot. Performs heuristic analysis of Twitter posts and generates suggestions and prompts.",
+  "main": "index.js",
+  "type": "commonjs"
+}

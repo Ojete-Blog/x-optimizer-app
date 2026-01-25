@@ -1,0 +1,40 @@
+{
+  "id": "x-optimizer",
+  "name": "X Optimizer",
+  "description": "Analiza posts de X/Twitter y genera sugerencias para mejorar alcance y engagement.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "postText": {
+        "type": "string",
+        "description": "Contenido del post (tweet) a analizar."
+      },
+      "hasVideo": {
+        "type": "boolean",
+        "description": "Indica si el post contiene vídeo.",
+        "default": false
+      },
+      "hashtags": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "Lista de hashtags utilizados en el post.",
+        "default": []
+      },
+      "linkPresent": {
+        "type": "boolean",
+        "description": "Indica si el post contiene enlaces externos.",
+        "default": false
+      }
+    },
+    "required": ["postText"]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "summary": { "type": "string" },
+      "analysis": { "type": "string" },
+      "suggestions": { "type": "string" },
+      "prompt": { "type": "string" }
+    }
+  }
+}
